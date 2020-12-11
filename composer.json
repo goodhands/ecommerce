@@ -1,18 +1,33 @@
 {
-    "name": "laravel/laravel",
+    "name": "goodhands/ecommerce",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "A commerce app for Nigerians.",
     "keywords": [
-        "framework",
-        "laravel"
+        "commerce",
+        "african",
+        "social-commerce"
+    ],
+    "authors": [
+        {
+            "name": "Samuel Olaegbe",
+            "email": "olaegbesamuel@gmail.com",
+            "homepage": "https://samuelolaegbe.com"
+        }
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/goodhands/ecommerce"
+        }
+    ],
     "require": {
         "php": "^7.3|^8.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
+        "laravel/passport": "^10.1",
         "laravel/sanctum": "^2.8",
         "laravel/tinker": "^2.5",
         "unicodeveloper/laravel-paystack": "^1.0"
