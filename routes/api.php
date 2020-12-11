@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/', function (Request $request) {
+    return [
+        "status" => "Live",
+        "message" => "Welcome to the back side",
+        "version" => "v1/api"
+    ];
 });
 
 /**
