@@ -28,7 +28,6 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/passport": "^10.1",
-        "laravel/sanctum": "^2.8",
         "laravel/tinker": "^2.5",
         "unicodeveloper/laravel-paystack": "^1.0"
     },
