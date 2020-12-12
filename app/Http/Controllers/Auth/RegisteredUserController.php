@@ -58,6 +58,11 @@ class RegisteredUserController extends Controller
                 'password' => Hash::make($request->password),
             ]));
 
+            //create user tokens
+            $token = $user->createToken('account-access');
+
+            // $user->setAttribute("token", $token->plainTextToken);
+
             //attach the user to the store as the owner
             $storeName->users()->save($user, ['role' => 'owner']);
 
@@ -71,7 +76,8 @@ class RegisteredUserController extends Controller
             "status" => "Success",
             "message" => "Registration successful",
             "user" => $user,
-            "storeName" => $storeName
+            "storeName" => $storeName,
+            "token" => $token->plainTextToken
         ], 201);
     }
 }

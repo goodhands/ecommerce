@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -29,15 +28,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        try{
             $request->authenticate();
+
             $request->session()->regenerate();
 
-        }catch(ValidationException $err){
-            return response()->json($err->errors(), 403);
-        }
-
-        return $request->user();
+            return auth()->user();
     }
 
     /**

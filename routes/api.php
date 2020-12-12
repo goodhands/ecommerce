@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -26,10 +26,9 @@ Route::get('/', function (Request $request) {
 });
 
 /**
- * Breeze's bootstrap
- */
-require __DIR__.'/auth.php';
-/**
  * Subscription endpoints
  */
 require __DIR__.'/subscription.php';
+
+//Store Endpoints
+require __DIR__.'/store.php';
