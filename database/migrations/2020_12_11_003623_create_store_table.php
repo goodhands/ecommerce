@@ -15,11 +15,11 @@ class CreateStoreTable extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('shortname');
-            $table->string('industry');
-            $table->string('size');
-            $table->string('category');
+            $table->string('industry')->nullable();
+            $table->string('size')->nullable();
+            $table->string('category')->nullable();
             
             $table->string('current_billing_plan')->nullable();
             $table->string('card_type')->nullable();

@@ -8,6 +8,7 @@ use App\Models\Store\Product;
 use App\Models\Store\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Store extends Model
@@ -21,11 +22,11 @@ class Store extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function users(): HasMany
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(User::class)->withPivot([
+        return $this->belongsToMany(User::class)->withPivot(
             'firstname', 'lastname', 'role'
-        ]);
+        );
     }
 
     public function delivery(): HasMany

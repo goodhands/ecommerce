@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,11 +29,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        try{
+            $request->authenticate();
+            $request->session()->regenerate();
 
-        $request->session()->regenerate();
+        }catch(ValidationException $err){
+            return response()->json($err->errors(), 403);
+        }
 
-        return redirect(RouteServiceProvider::HOME);
+        return $request->user();
     }
 
     /**
@@ -49,6 +54,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return true;
     }
 }
