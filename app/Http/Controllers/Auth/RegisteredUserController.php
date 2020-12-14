@@ -82,14 +82,8 @@ class RegisteredUserController extends Controller
             'storeId' => 'required|integer'
         ]);
 
-        Store::whereId($request->storeId)
-                ->update([
-                    "size" => $request->size,
-                    "category" => $request->category,
-                    "industry" => $request->industry
-                ]);
-
-        return Store::find($request->storeId);
+        return $this->storeModel
+                    ->updateStore($request->except(['storeId', 'step']), $request->storeId);
     }
 
     public function createStore(Request $request){
