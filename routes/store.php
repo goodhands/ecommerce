@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 //Create a store as a new user
-Route::post('/sign-up', [RegisteredUserController::class, 'store'])
+//?step=0 -> email, password, store, name
+//?step=1 -> industry, category, size
+Route::post('/sign-up', [RegisteredUserController::class, 'createStore'])
                 ->middleware('guest');
 
 /**
