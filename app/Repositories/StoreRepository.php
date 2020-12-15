@@ -64,9 +64,7 @@ class StoreRepository{
         if(!auth()->user()) throw new Exception("User is not authenticated");
 
         if(auth()->user()->cannot('update', $store)){
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'permission_denied' => "You do not have the right permissions for that action",
-            ]);
+            throw new Exception("You do not have the right permissions for that action");
         }
     }
 }

@@ -38,4 +38,9 @@ class Store extends Model
     {
         return $this->hasMany(PaymentMethods::class);
     }
+
+    public function getRouteKeyName()
+    {
+        return 'shortname';
+    }
 }
