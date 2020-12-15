@@ -19,5 +19,5 @@ Route::get('store/{shortname}', [StoreController::class, 'show']);
 //TODO Add a middleware to ensure user is subscribed to a plan 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function () {
     Route::post('/', [StoreController::class, 'store']);
-    Route::pup('/', [StoreController::class, 'update']);
+    Route::put('/', [StoreController::class, 'update']);
 });
