@@ -23,7 +23,7 @@ class StoreResource extends JsonResource
                 "category" => $this->category,
                 "size" => $this->size,
                 "industry" => $this->industry,
-                "users" => StoreUsersCollection::collection($this->users)
+                "administrators" => new UserResource($this->users)
             ]
         ];
     }

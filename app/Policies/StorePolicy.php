@@ -58,7 +58,7 @@ class StorePolicy
         return $store->users
                 ->where('pivot.role', 'owner')
                 ->where('id', $user->id)
-                ->count() > 1;
+                ->count() > 0;
     }
 
     /**

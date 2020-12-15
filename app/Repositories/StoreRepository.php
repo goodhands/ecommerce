@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Events\StoreCreated;
 use App\Events\TrackNewUser;
+use App\Http\Resources\StoreResource;
 use App\Models\Store;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +54,7 @@ class StoreRepository{
         
         event(new StoreCreated($data));
 
-        return $store;
+        return new StoreResource($store);
     }
 
     /**

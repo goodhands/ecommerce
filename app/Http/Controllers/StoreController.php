@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\StoreResource;
+use App\Http\Resources\StoreUsersCollection;
+use App\Http\Resources\UserCollection;
 use App\Repositories\StoreRepository;
+use App\Models\Store;
+use App\Models\Store\User;
 use Illuminate\Http\Request;
 
 class StoreController extends Controller
@@ -44,4 +48,9 @@ class StoreController extends Controller
 
         return new StoreResource($store);
     }
+
+    public function show(Store $shortname){
+        return new StoreResource($shortname);
+    }
+    
 }
