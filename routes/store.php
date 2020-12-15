@@ -18,6 +18,6 @@ Route::get('store/{shortname}', [StoreController::class, 'show']);
 //Endpoints that require auth
 //TODO Add a middleware to ensure user is subscribed to a plan 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function () {
-    Route::post('/new', [StoreController::class, 'store']);
-    Route::post('/update', [StoreController::class, 'update']);
+    Route::post('/', [StoreController::class, 'store']);
+    Route::pup('/', [StoreController::class, 'update']);
 });
