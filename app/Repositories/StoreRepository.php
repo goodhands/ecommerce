@@ -6,10 +6,19 @@ use App\Events\StoreCreated;
 use App\Events\TrackNewUser;
 use App\Http\Resources\StoreResource;
 use App\Models\Store;
+use App\Repositories\Traits\Products as HasProducts;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class StoreRepository{
+
+    use HasProducts;
+
+    public function __construct(Store $store)
+    {
+        $this->storeModel = $store;    
+    }
+
     public function initialize(string $storeName){
         $store = Store::create([
             'shortname' => $storeName

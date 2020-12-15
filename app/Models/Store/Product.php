@@ -23,7 +23,7 @@ class Product extends Model
 
     public function store() : BelongsTo
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(Store::class, 'store_id', 'shortname');
     }
 
     public function category(): HasOne
