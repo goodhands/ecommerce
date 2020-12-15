@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\Store\DeliveryMethods;
 use App\Models\Store\PaymentMethods;
 use App\Models\Store\Product;
-use App\Models\Store\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

@@ -9,16 +9,13 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 //?step=0 -> email, password, store, name
 //?step=1 -> industry, category, size
 Route::post('/sign-up', [RegisteredUserController::class, 'createStore'])
-                ->middleware('guest');
+        ->middleware('guest');
 
 /**
  * Create an additional store as an existing user
  */
 //TODO Add a middleware to ensure user is subscribed to a plan 
-// Route::group(['middleware' => ['auth:sanctum']], function () {
-//     Route::post('/store/new', [StoreController::class, 'store']);
-// });
-
-Route::middleware('auth:sanctum')->post('/store/new', function (Request $request) {
-    return auth()->user();
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function () {
+    Route::post('/new', [StoreController::class, 'store']);
+    Route::post('/update', [StoreController::class, 'update']);
 });

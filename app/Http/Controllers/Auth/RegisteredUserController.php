@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\StoreCreated;
 use App\Http\Controllers\Controller;
-use App\Models\Store;
 use App\Models\User;
 use App\Repositories\StoreRepository;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -23,15 +21,6 @@ class RegisteredUserController extends Controller
     public function __construct(StoreRepository $store)
     {
         $this->storeModel = $store;    
-    }
-    /**
-     * Display the registration view.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('auth.register');
     }
 
     /**
@@ -82,8 +71,13 @@ class RegisteredUserController extends Controller
             'storeId' => 'required|integer'
         ]);
 
-        return $this->storeModel
-                    ->updateStore($request->except(['storeId', 'step']), $request->storeId);
+        $store = $this->storeModel
+                    ->updateStore($request->except(['storeId', 'step']), $request->storeId, false);
+
+        //emit event for newly created store
+        event(new StoreCreated($store));
+        
+        return $store;
     }
 
     public function createStore(Request $request){
