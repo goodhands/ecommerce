@@ -15,15 +15,22 @@ class CreateStoreProductTable extends Migration
     {
         Schema::create('store_product', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('store_id')->nullable();
+            $table->unsignedBigInteger('store_id')->nullable(); // connect with store
             $table->string('name');
             $table->string('shortname');
-            $table->string('price');
-            $table->string('discount');
-            $table->string('description');
-            $table->unsignedBigInteger('category_id'); // type -> sub_category -> category
-            $table->string('media_cover'); //featured image
-            $table->json('media_library');
+            $table->float('price')->default(0.00);
+            $table->float('discount')->default(0.00);
+            $table->text('description')->nullable();
+            $table->string('sku')->nullable();
+            $table->integer('stock')->default(1);
+            //delivery: id => 
+            // $table->string('shipping_provider')->nullable();
+            $table->string('product_type')->default('physical'); //digital or physical: only physical is supported for now
+            $table->string('status')->default('draft');
+            $table->unsignedBigInteger('collection_id')->nullable(); // e.g: Men's wear -> defaults to home
+            $table->unsignedBigInteger('category_id')->nullable(); // product type/category, e.g: Shirt
+            //{cover:'image.png', }
+            $table->json('media_library')->nullable(); //media library, first one will be picked as featured
             $table->timestamps();
         });
     }

@@ -56,7 +56,7 @@ class StoreRepository{
             //the user and not the old details
             return Store::find($storeId);
         }else{
-            throw new Exception("Failed to update store");
+            throw new Exception("Failed to update store" . $didUpdate);
         }
     }
 
