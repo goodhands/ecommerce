@@ -7,12 +7,12 @@ use App\Events\TrackNewUser;
 use App\Http\Resources\StoreResource;
 use App\Models\Store;
 use App\Repositories\Traits\Products as HasProducts;
+use App\Repositories\Traits\Collections as HasCollections;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 
 class StoreRepository{
 
-    use HasProducts;
+    use HasProducts, HasCollections;
 
     public function __construct(Store $store)
     {

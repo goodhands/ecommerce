@@ -9,7 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Collections extends Model
 {
-    protected $table = 'product_categories';
+    protected $table = 'collections';
+
+    protected $fillable = [
+        'name', 'shortname', 'createdBy', 'hasAutomation', 'description'
+    ];
     
     use HasFactory;
 
