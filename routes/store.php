@@ -24,5 +24,9 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function (
 
     // interact with the products
     Route::get('/{shortname}/products/{slug}', [ProductController::class, 'getProductByShortname']);
+    Route::get('/{shortname}/products', [ProductController::class, 'index']);
     Route::post('/{shortname}/products/', [ProductController::class, 'createProduct']);
+
+    //collections
+    Route::post('/{shortname}/collections', [CollectionController::class, 'store']);
 });

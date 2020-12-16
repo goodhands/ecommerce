@@ -81,4 +81,11 @@ class ProductController extends Controller
     public function getProductByShortname(Request $request, Store $shortname, $slug){
         return $shortname->products->where('shortname', $slug)->first();
     }
+
+    /**
+     * Get all products
+     */
+    public function index(Store $shortname){
+        return $shortname->products;
+    }
 }
