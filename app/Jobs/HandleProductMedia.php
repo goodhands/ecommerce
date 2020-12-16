@@ -13,14 +13,18 @@ class HandleProductMedia implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $files;
+    public $productId;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($files, $productId)
     {
-        //
+        $this->files = $files;
+        $this->productId = $productId;
     }
 
     /**
@@ -30,6 +34,6 @@ class HandleProductMedia implements ShouldQueue
      */
     public function handle()
     {
-        //
+        dd($this->files);
     }
 }

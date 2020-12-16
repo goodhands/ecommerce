@@ -23,5 +23,5 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function (
     Route::put('/', [StoreController::class, 'update']);
 
     // interact with the products
-    Route::post('/{shortname}/products/', [ProductController::class, 'store']);
+    Route::post('/{shortname}/products/', [ProductController::class, 'createProduct']);
 });
