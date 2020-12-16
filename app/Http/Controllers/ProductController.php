@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\HandleProductMedia;
 use App\Repositories\StoreRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Store;
-use CloudinaryLabs\CloudinaryLaravel\Facades;
 use App\Models\Store\Product;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProductController extends Controller
 {
@@ -63,10 +60,10 @@ class ProductController extends Controller
         return $responses;
     }
 
-    public function store(Request $request, Store $shortname){
+    public function store($request, $shortname){
         $request->validate([
             "name" => "required|string|max:200",
-            "productId" => "required|integer|unique:store_products,id",
+            "productId" => "required|integer",
             "price" => "required|integer",
             "description" => "required|string"
         ]);
@@ -76,8 +73,12 @@ class ProductController extends Controller
             'shortname' => Str::slug($request->name) .'-'. rand(0001, 9999)
         ]);
 
-        $product = $this->store->addProducts($request->except('productId'), $shortname, $request->productId);
+        $product = $this->store->addProducts($request->except('productId', 'step'), $shortname, $request->productId);
         
         return $product;
+    }
+
+    public function getProductByShortname(Request $request, Store $shortname, $slug){
+        return $shortname->products->where('shortname', $slug)->first();
     }
 }

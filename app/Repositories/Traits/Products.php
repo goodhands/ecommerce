@@ -17,8 +17,9 @@ trait Products{
         if(!$productId){
             $product = $productHelper::create($data);
         }else{
-            $product = $productHelper::whereId($productId)
-                        ->update($data);
+            $didUpdate = $productHelper::whereId($productId)
+                            ->update($data);
+            if($didUpdate) $product = $productHelper::find($productId);
         }
 
         //attach product to store
