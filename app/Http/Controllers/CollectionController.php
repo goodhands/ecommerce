@@ -45,4 +45,14 @@ class CollectionController extends Controller
     public function search(Store $shortname, $keyword){
         return $this->store->searchCollection($keyword, $shortname);
     }
+
+    public function addProduct(Store $shortname, Request $request){
+        $request->validate([
+            'collectionId' => 'required|integer',
+            'productId' => 'required|integer'
+        ]);
+
+        return $this->store->
+                    addProduct($request->collectionId, $request->productId, $shortname);
+    }
 }

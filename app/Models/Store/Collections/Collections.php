@@ -24,7 +24,7 @@ class Collections extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'collection_id', 'id');
     }
 
     public function condition()
