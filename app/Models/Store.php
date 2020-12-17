@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Store\Collections\Collections;
 use App\Models\Store\DeliveryMethods;
+use App\Models\Store\Order;
 use App\Models\Store\PaymentMethods;
 use App\Models\Store\Product;
 use App\Models\User;
@@ -43,6 +44,11 @@ class Store extends Model
     public function collections(): HasMany
     {
         return $this->hasMany(Collections::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function getRouteKeyName()

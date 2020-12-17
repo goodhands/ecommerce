@@ -32,3 +32,6 @@ require __DIR__.'/subscription.php';
 
 //Store Endpoints
 require __DIR__.'/store.php';
+
+//Orders
+require __DIR__.'/order.php';

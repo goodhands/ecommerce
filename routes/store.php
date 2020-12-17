@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProductController;
