@@ -23,14 +23,26 @@ class CollectionController extends Controller
         //upload media
         $mediaName = $request->file('media')->storeOnCloudinary('commerce')->getSecurePath();
         
+        //add auto generated details
         $request->request->add([
             'createdBy' => auth()->user()->name,
             'shortname' => Str::slug($request->name),
-            'media' => $mediaName
         ]);
-        
-        $collection = $this->store->addCollection($request->except('store_id'), $shortname);
+
+        $collection = $this->store->addCollection($request->except('media'), $shortname);
+
+        //this is hacky way to do it|we want to save the name returned by cloud
+        $collection->media = $mediaName;
+        $collection->save();
             
         return $collection;
+    }
+
+    public function index(Store $shortname){
+        return $shortname->collections;
+    }
+
+    public function search(Store $shortname, $keyword){
+        return $this->store->searchCollection($keyword, $shortname);
     }
 }

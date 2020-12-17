@@ -30,4 +30,6 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function (
 
     //collections
     Route::post('/{shortname}/collections', [CollectionController::class, 'store']);
+    Route::get('/{shortname}/collections', [CollectionController::class, 'index']);
+    Route::get('/{shortname}/collections/search/{keyword}', [CollectionController::class, 'search']);
 });

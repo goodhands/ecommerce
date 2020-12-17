@@ -15,4 +15,11 @@ trait Collections{
         
         return $collection;
     }
+
+    public function searchCollection($keyword, $store){
+        return Collection::
+                    where('store_id', $store->id)
+                    ->where('name', 'LIKE', "%$keyword%")
+                    ->get();
+    }
 }
