@@ -6,6 +6,8 @@ use App\Repositories\StoreRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Store;
+use App\Models\Store\Collections\Collections;
+
 class CollectionController extends Controller
 {
     public function __construct(StoreRepository $store)
@@ -26,7 +28,7 @@ class CollectionController extends Controller
         //add auto generated details
         $request->request->add([
             'createdBy' => auth()->user()->name,
-            'shortname' => Str::slug($request->name),
+            'shortname' => Str::slug($request->name .'-'. rand(0, 999)),
         ]);
 
         $collection = $this->store->addCollection($request->except('media'), $shortname);
@@ -39,7 +41,7 @@ class CollectionController extends Controller
     }
 
     public function index(Store $shortname){
-        return $shortname->collections;
+        return $shortname->collections()->paginate(3);
     }
 
     public function search(Store $shortname, $keyword){
@@ -54,5 +56,9 @@ class CollectionController extends Controller
 
         return $this->store->
                     addProduct($request->collectionId, $request->productId, $shortname);
+    }
+
+    public function show(Store $shortname, Collections $collection){
+        return $shortname->collections->where('shortname', $collection->shortname);
     }
 }

@@ -31,4 +31,9 @@ class Collections extends Model
     {
         return $this->hasMany(Conditions::class);
     }
+
+    public function getRouteKeyName()
+    {
+        return 'shortname';
+    }
 }
