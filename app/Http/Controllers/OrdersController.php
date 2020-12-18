@@ -51,4 +51,8 @@ class OrdersController extends Controller
 
         return $order->products;
     }
+
+    public function index(Store $store){
+        return $store->orders;
+    }
 }
