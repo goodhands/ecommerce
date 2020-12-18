@@ -9,11 +9,11 @@ class Order extends Model
 {
     use HasFactory;
     
-    protected $table = 'store_orders';
+    protected $table = 'store_order';
 
     protected $fillable = [
         'payment_status', 'product_id', 'customer_id', 'total', 'fulfilled',
-        'payment_method', 'delivery_method'
+        'payment_method', 'delivery_method', 'store_id'
     ];
 
     protected $casts = [
