@@ -28,26 +28,23 @@ class OrdersController extends Controller
             'products' => "array|required",
             'payment_method' => 'string|required',
             'delivery_method' => 'string|required',
+            'customer_id' => 'integer|required',
         ]);
 
         $request->request->add([
-            'store_id' => $store->id,
-            'total' => 23000, //placeholer: calculate how much each product cost
-            'payment_status' => 'Pending', //when webhook from payment provider is received, update this
             'fulfilled' => false,
-            'customer_id' => '1'
         ]);
 
         // create order
         $order = Order::create($request->except('products'));
+
+        $store->orders()->save($order);
 
         //save products
         foreach((array) $request->products as $product){
             $order->products()->attach($product['product'], ['quantity' => $product['qty']]);
         }
 
-        return response()->json([
-            "order" => $order->products,
-        ]);
+        return $order->products;
     }
 }
