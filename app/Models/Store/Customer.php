@@ -12,4 +12,9 @@ class Customer extends Model
     protected $casts = [
         'promotionals' => 'bool'
     ];
+
+    protected $fillable = [
+        'lastname', 'firstname', 'store_id', 'email', 'promotionals', 'address', 'apartment',
+        'city', 'state', 'country', 'postal'
+    ];
 }

@@ -8,11 +8,12 @@ use App\Http\Resources\StoreResource;
 use App\Models\Store;
 use App\Repositories\Traits\Products as HasProducts;
 use App\Repositories\Traits\Collections as HasCollections;
+use App\Repositories\Traits\Customers as HasCustomers;
 use Exception;
 
 class StoreRepository{
 
-    use HasProducts, HasCollections;
+    use HasProducts, HasCollections, HasCustomers;
 
     public function __construct(Store $store)
     {
