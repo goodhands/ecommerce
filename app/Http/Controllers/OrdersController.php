@@ -6,12 +6,13 @@ use App\Jobs\CalculateOrderTotal;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\Store\Order;
+use App\Repositories\StoreRepository;
 
 class OrdersController extends Controller
 {
-    public function __construct(Store $store)
+    public function __construct(StoreRepository $store)
     {
-        $this->store = $store;
+        $this->storeModel = $store;
     }
 
     public function checkout(Request $request, Store $store){
@@ -53,6 +54,10 @@ class OrdersController extends Controller
     }
 
     public function index(Store $store){
-        return $store->orders;
+        return $store->orders()->paginate(20);
+    }
+
+    public function show(Store $store, Order $order){
+        return response()->json($order);
     }
 }

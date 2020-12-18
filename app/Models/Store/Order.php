@@ -29,4 +29,9 @@ class Order extends Model
             'quantity'
         );
     }
+
+    public function getRouteKeyName()
+    {
+        return 'id';
+    }
 }
