@@ -3,4 +3,6 @@
 use App\Http\Controllers\SecretsController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/secrets', [SecretsController::class, 'store']);
+Route::group(['prefix' => '/store/{store}', 'middleware' => ['auth:sanctum']], function () {
+    Route::post('/secrets', [SecretsController::class, 'store']); 
+});

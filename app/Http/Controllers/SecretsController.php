@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Store\Secrets;
 use App\Repositories\StoreRepository;
+use App\Models\Store;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class SecretsController extends Controller
         $this->store = $store;
     }
 
-    public function store(Request $request){
+    public function store(Request $request, Store $store){
 
         $request->validate([
             'provider_id' => 'required|integer',
@@ -24,7 +25,7 @@ class SecretsController extends Controller
             'secret_key' => 'string'
         ]);
         
-        $secret = $this->store->addSecret($request->all());
+        $secret = $this->store->addSecret($request->all(), $store);
 
         if($secret instanceof Secrets){
             return true;
