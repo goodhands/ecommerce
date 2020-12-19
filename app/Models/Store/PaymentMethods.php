@@ -18,4 +18,9 @@ class PaymentMethods extends Model
     {
         return $this->belongsTo(Store::class);
     }
+
+    public function secret()
+    {
+        return $this->hasOne(Secrets::class, 'provider_id', 'id');
+    }
 }

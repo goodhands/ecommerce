@@ -35,3 +35,6 @@ require __DIR__.'/store.php';
 
 //Orders
 require __DIR__.'/order.php';
+
+//Secrets
+require __DIR__ .'/secrets.php';

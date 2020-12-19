@@ -5,20 +5,14 @@ namespace App\Models\Store;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class DeliveryMethods extends Model
+class Secrets extends Model
 {
     use HasFactory;
 
-    protected $table = 'delivery_methods';
-
-    public function store()
+    public function store() : BelongsTo
     {
         return $this->belongsTo(Store::class);
-    }
-
-    public function secret()
-    {
-        return $this->hasOne(Secrets::class, 'provider_id', 'id');
     }
 }

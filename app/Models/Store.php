@@ -8,6 +8,7 @@ use App\Models\Store\DeliveryMethods;
 use App\Models\Store\Order;
 use App\Models\Store\PaymentMethods;
 use App\Models\Store\Product;
+use App\Models\Store\Secrets;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +31,11 @@ class Store extends Model
         return $this->belongsToMany(User::class)->withPivot(
             'firstname', 'lastname', 'role'
         );
+    }
+
+    public function secrets()
+    {
+        return $this->hasMany(Secrets::class);
     }
 
     public function delivery(): HasMany
