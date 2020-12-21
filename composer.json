@@ -19,6 +19,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/goodhands/ecommerce"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/goodhands/laravel-paystack"
         }
     ],
     "require": {
@@ -31,7 +35,7 @@
         "laravel/framework": "^8.12",
         "laravel/sanctum": "^2.8",
         "laravel/tinker": "^2.5",
-        "unicodeveloper/laravel-paystack": "^1.0"
+        "unicodeveloper/laravel-paystack": "dev-master"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

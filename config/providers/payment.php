@@ -7,6 +7,7 @@ return [
     'paystack' => [
         'website' => 'https://dashboard.paystack.com/',
         'id' => 'paystack-pay',
+        'api' => 'https://api.paystack.co',
         'description' => '',
         'method' => $paystackOptions,
         'settings' => [
@@ -23,6 +24,7 @@ return [
     'flutterwave' => [
         'website' => 'https://dashboard.flutterwave.com/',
         'id' => 'flutter-pay',
+        'api' => 'https://api.paystack.co',
         'method' => $flutterOptions,
         'description' => '',
         'settings' => [

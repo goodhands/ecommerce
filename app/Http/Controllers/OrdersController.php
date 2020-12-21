@@ -8,11 +8,12 @@ use App\Models\Store;
 use App\Models\Store\Customer;
 use App\Models\Store\Order;
 use App\Repositories\StoreRepository;
-
 class OrdersController extends Controller
 {
+    private $paymentService;
+
     public function __construct(StoreRepository $store)
-    {
+    {    
         $this->storeModel = $store;
     }
 
@@ -26,6 +27,10 @@ class OrdersController extends Controller
 
         if($request->step == "products"){
             return $this->store($request, $store);
+        }
+
+        if($request->step == "pay"){
+            return $this->pay($request, $store);
         }
     }
 
@@ -104,6 +109,28 @@ class OrdersController extends Controller
             //pass the customer found and update it
             return $this->storeModel->updateCustomers($request->except('step'), $customer, $store);
         }
+    }
+
+    public function pay($request, $store){
+
+        $key = "sk_test_8d1d7201827d550e467186b1610506da7a739551";
+        $url = "https://api.paystack.co";
+
+        $methods = $store->payment->where('label', 'Paystack')->first()->methods;
+
+        $key = $store->secrets->where('provider_id', '9')->first()->secret_key;
+
+        $provider = $request->provider_label;
+
+        $res = paystack()->prepare($key, $url)->getAuthorizationResponse([
+                    'amount' => '23000',
+                    'reference' => rand(0000,10000),
+                    'email' => 'sam@gmail.com',
+                    'callback_url' => 'http://127.0.0.1:8000/checkout?order=120940353058&provider=paystack',
+                    'channels' => (null != $methods) ? $methods : config('providers.payment.paystack.method')
+                ]);
+        
+        return response()->json($res);
     }
 
 }

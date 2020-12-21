@@ -29,4 +29,27 @@ trait Payments{
 
         return $method;
     }
+
+    public function acceptPayment(){
+
+    }
+
+    public function payWithPaystack($data, $store){
+
+        $key = $store->secrets->where('provider_id', $data->providerId)->first()->secret_key;
+
+        $url = config('providers.payment.paystack.api');
+
+        $methods = $store->payment->where('label', 'Paystack')->first()->methods;
+
+        $provider = $data->provider_label;
+
+        $res = paystack()->prepare($key, $url)->getAuthorizationResponse([
+                    'amount' => '23000',
+                    'reference' => rand(0000,10000),
+                    'email' => 'sam@gmail.com',
+                    'callback_url' => config('app.url') . '/checkout?order=' . $data->orderId . '&provider=paystack',
+                    'channels' => (null != $methods) ? $methods : config('providers.payment.paystack.method')
+                ]);
+    }
 }

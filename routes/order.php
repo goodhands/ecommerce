@@ -14,6 +14,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => "store/{store}"], fu
     /**
      * 1. Create customer information
      * 2. Create a new order and attach customer. 
+     * 3. Pay
      * Also load the rates of delivery providers set by 
      * the store and send that back as a response 
      */
