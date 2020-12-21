@@ -9,12 +9,13 @@ use App\Models\Store;
 use App\Repositories\Traits\Products as HasProducts;
 use App\Repositories\Traits\Collections as HasCollections;
 use App\Repositories\Traits\Customers as HasCustomers;
+use App\Repositories\Traits\Payments as HasPayments;
 use App\Repositories\Traits\Secrets as HasSecrets;
 use Exception;
 
 class StoreRepository{
 
-    use HasProducts, HasCollections, HasCustomers, HasSecrets;
+    use HasProducts, HasCollections, HasCustomers, HasSecrets, HasPayments;
 
     public function __construct(Store $store)
     {

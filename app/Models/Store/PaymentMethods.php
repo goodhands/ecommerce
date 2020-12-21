@@ -12,7 +12,14 @@ class PaymentMethods extends Model
 
     protected $table = 'payment_methods';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'label', 'active', 'methods', 'website', 'settings'
+    ];
+
+    protected $casts = [
+        'methods' => 'array',
+        'active' => 'bool'
+    ];
 
     public function store()
     {

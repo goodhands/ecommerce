@@ -13,11 +13,13 @@ class CreatePaymentMethodsTable extends Migration
      */
     public function up()
     {
+        //store_payments
         Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('store_id');
             $table->string('method'); //cash, card
-            $table->string('provider'); //paystack
+            $table->string('label'); //paystack
+            $table->string('website'); //paystack.com
             $table->string('settings');
             $table->timestamps();
         });
