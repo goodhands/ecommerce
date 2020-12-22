@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Store\Order;
+use App\Repositories\StoreRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,18 +32,12 @@ class CalculateOrderTotal implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(StoreRepository $storeModel)
     {
         $products = $this->order->products;
 
-        $productTotal = [];
+        //calculate order total
+        $storeModel->calculateTotal($products, $this->order);
 
-        foreach($products as $product){
-            $productTotal[] = $product->price * $product->pivot->quantity;
-        }
-
-        $this->order->total = array_sum($productTotal);
-        
-        $this->order->save();
     }
 }

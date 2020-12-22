@@ -13,15 +13,20 @@ class Order extends Model
 
     protected $fillable = [
         'payment_status', 'product_id', 'customer_id', 'total', 'fulfilled',
-        'payment_method', 'delivery_method', 'store_id'
+        'payment_method', 'delivery_method', 'store_id', 'delivery_date'
     ];
 
     protected $casts = [
         'fulfilled' => 'bool',
+        'delivery_date' => 'datetime',
     ];
 
     public function customer(){
         return $this->belongsTo(Customer::class);
+    }
+
+    public function delivery(){
+        return $this->hasOne(DeliveryMethods::class, 'id', 'delivery_method');
     }
 
     public function products(){

@@ -30,26 +30,38 @@ trait Payments{
         return $method;
     }
 
-    public function acceptPayment(){
+    public function acceptPayment($data, $store, $order){
+        //gives us the label of the payment provider
+        $provider = $store->payment->where('id', $data->payment_method)->first()->label;
 
+        return $this->{"payWith".$provider}($data, $store, $order);
     }
 
-    public function payWithPaystack($data, $store){
+    public function payWithPaystack($data, $store, $order){
 
-        $key = $store->secrets->where('provider_id', $data->providerId)->first()->secret_key;
+        $key = $store->secrets->where('provider_id', $data->payment_method)->first()->secret_key;
 
         $url = config('providers.payment.paystack.api');
 
-        $methods = $store->payment->where('label', 'Paystack')->first()->methods;
+        //payment methods: this should give us paystack's id
+        $methods = $store->payment->where('id', $data->payment_method)->first()->methods;
 
-        $provider = $data->provider_label;
+        //retrieve customer details
+        $amount = $order->total * 100; //we store the value in naira but convert it to kobo for Paystack
+        $email = $order->customer->email;
 
         $res = paystack()->prepare($key, $url)->getAuthorizationResponse([
-                    'amount' => '23000',
-                    'reference' => rand(0000,10000),
-                    'email' => 'sam@gmail.com',
+                    'amount' => $amount,
+                    'reference' => paystack()->genTranxRef(),
+                    'email' => $email,
                     'callback_url' => config('app.url') . '/checkout?order=' . $data->orderId . '&provider=paystack',
                     'channels' => (null != $methods) ? $methods : config('providers.payment.paystack.method')
                 ]);
+        
+        return response()->json([$res, $amount]);
+    }
+
+    public function payWithFlutterwave($data, $store, $order){
+        return "pay with flutterwave";
     }
 }

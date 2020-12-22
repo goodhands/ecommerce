@@ -28,20 +28,20 @@ class OrdersController extends Controller
         if($request->step == "products"){
             return $this->store($request, $store);
         }
-
-        if($request->step == "pay"){
-            return $this->pay($request, $store);
-        }
     }
 
     /**
-     * Create a new order
+     * This is the final step in creating an
+     * order. This returns a url (by calling $this->pay())
+     * that the user 
+     * will be redirected to for payment based on
+     * the provider they selected.
      */
     public function store($request, $store){
         $request->validate([
             'products' => "array|required",
-            'payment_method' => 'string|required', //ideally should be the id of the payment method in the store_payments table
-            'delivery_method' => 'string|required', //same as above
+            'payment_method' => 'integer|required', //ID of provider, e.g: Paystack, Flutterwave, etc
+            'delivery_method' => 'integer|required', //ID of provider, e.g: Gokada, Max.ng, etc
             'customer_id' => 'integer|required',
         ]);
 
@@ -54,34 +54,21 @@ class OrdersController extends Controller
 
         $store->orders()->save($order);
 
-        //dispatch job to calculate order total
-        CalculateOrderTotal::dispatch($order);
-
-        //save products
+        //save products to the order
         foreach((array) $request->products as $product){
             $order->products()->attach($product['product'], ['quantity' => $product['qty']]);
         }
 
-        return $order->products;
+        //calculate order total and update the db
+        $total = $this->storeModel->calculateTotal($order);
+        
+        return $this->storeModel->acceptPayment($request, $store, $order);
     }
 
     /**
-     * Show all orders
-     */
-    public function index(Store $store){
-        //make sure only the admin can do this
-        $this->storeModel->userHasAccess($store);
-
-        return $store->orders()->paginate(20);
-    }
-
-    /**
-     * Show a single order
-     */
-    public function show(Store $store, Order $order){
-        return $order;
-    }
-
+     * Endpoint to store a customer details during
+     * checkout
+    */
     public function addCustomer($request, $store){
         $request->validate([
             'firstname' => 'required_without:lastname|string',
@@ -111,26 +98,20 @@ class OrdersController extends Controller
         }
     }
 
-    public function pay($request, $store){
+    /**
+     * Show all orders
+     */
+    public function index(Store $store){
+        //make sure only the admin can do this
+        $this->storeModel->userHasAccess($store);
 
-        $key = "sk_test_8d1d7201827d550e467186b1610506da7a739551";
-        $url = "https://api.paystack.co";
-
-        $methods = $store->payment->where('label', 'Paystack')->first()->methods;
-
-        $key = $store->secrets->where('provider_id', '9')->first()->secret_key;
-
-        $provider = $request->provider_label;
-
-        $res = paystack()->prepare($key, $url)->getAuthorizationResponse([
-                    'amount' => '23000',
-                    'reference' => rand(0000,10000),
-                    'email' => 'sam@gmail.com',
-                    'callback_url' => 'http://127.0.0.1:8000/checkout?order=120940353058&provider=paystack',
-                    'channels' => (null != $methods) ? $methods : config('providers.payment.paystack.method')
-                ]);
-        
-        return response()->json($res);
+        return $store->orders()->paginate(20);
     }
 
+    /**
+     * Show a single order
+     */
+    public function show(Store $store, Order $order){
+        return $order;
+    }
 }

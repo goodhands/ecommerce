@@ -45,7 +45,7 @@ class Store extends Model
 
     public function payment(): HasMany
     {
-        return $this->hasMany(PaymentMethods::class);
+        return $this->hasMany(PaymentMethods::class)->where('active', 1);
     }
 
     public function collections(): HasMany

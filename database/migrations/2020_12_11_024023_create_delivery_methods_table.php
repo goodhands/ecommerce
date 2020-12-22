@@ -18,7 +18,7 @@ class CreateDeliveryMethodsTable extends Migration
             $table->unsignedBigInteger('store_id');
             $table->string('provider');
             $table->string('shortname');
-            $table->string('speed');
+            $table->string('speed'); //removed in another migration
             $table->timestamps();
         });
     }

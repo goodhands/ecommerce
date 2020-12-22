@@ -12,6 +12,14 @@ class DeliveryMethods extends Model
 
     protected $table = 'delivery_methods';
 
+    protected $fillable = [
+        'label', 'active', 'store_id'
+    ];
+
+    protected $casts = [
+        'active' => 'bool'
+    ];
+
     public function store()
     {
         return $this->belongsTo(Store::class);

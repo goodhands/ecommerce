@@ -29,12 +29,12 @@ class PaymentMethodsController extends Controller
             'secret_key' => 'string|required_without:api_key',
             'api_key' => 'string|required_without:secret_key,public_key',
             'methods' => 'required|array',
-            'active' => 'integer|required',
             'id' => 'string|required', //the internal id of the provider [name + pay]
         ]);
 
         $request->request->add([
-            'label' => ucfirst(Str::before($request->id, '-'))
+            'label' => ucfirst(Str::before($request->id, '-')),
+            'active' => true
         ]);
 
         $data = $this->storeModel->addPaymentMethod($request, $store);
@@ -54,7 +54,8 @@ class PaymentMethodsController extends Controller
     }
 
     /**
-     * Return all our providers
+     * Return all providers supported so 
+     * they can choose which to setup
      */
     public function providers(){
         return $this->providers;
