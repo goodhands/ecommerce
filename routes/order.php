@@ -19,5 +19,6 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => "store/{store}"], fu
      * the store and send that back as a response 
      */
     Route::post('/checkout', [OrdersController::class, 'checkout']);
-    // Route::post('/checkout/{order}', [OrdersController::class, 'pay']);
 });
+
+Route::get('/checkout/verify', [OrdersController::class, 'verify']);

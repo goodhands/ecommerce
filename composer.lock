@@ -5101,12 +5101,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/goodhands/laravel-paystack.git",
-                "reference": "f46324c6bd976499ae3cbca535db751811fb204f"
+                "reference": "985d3c7d93fe219dd1596e9e3d2dcc39d75d46b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/goodhands/laravel-paystack/zipball/f46324c6bd976499ae3cbca535db751811fb204f",
-                "reference": "f46324c6bd976499ae3cbca535db751811fb204f",
+                "url": "https://api.github.com/repos/goodhands/laravel-paystack/zipball/985d3c7d93fe219dd1596e9e3d2dcc39d75d46b3",
+                "reference": "985d3c7d93fe219dd1596e9e3d2dcc39d75d46b3",
                 "shasum": ""
             },
             "require": {
@@ -5179,7 +5179,7 @@
             "support": {
                 "source": "https://github.com/goodhands/laravel-paystack/tree/master"
             },
-            "time": "2020-12-21T03:18:34+00:00"
+            "time": "2020-12-22T09:03:48+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

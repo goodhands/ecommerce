@@ -17,4 +17,13 @@ trait Orders{
         
         $order->save();
     }
+
+    public function findOrder($id){
+        return Order::find($id);
+    }
+
+    public function getOrderProductNamesGlued($order){
+        $products = $order->products->pluck('name')->toArray();
+        return implode(", ", $products);
+    }
 }

@@ -83,4 +83,12 @@ class StoreRepository{
             throw new Exception("You do not have the right permissions for that action");
         }
     }
+
+    /**
+     * Find a store by shortname.
+     * Shortname is our primary key
+     */
+    public function findStore($shortname){
+        return Store::where('shortname', $shortname)->first();
+    }
 }

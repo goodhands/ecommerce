@@ -114,4 +114,32 @@ class OrdersController extends Controller
     public function show(Store $store, Order $order){
         return $order;
     }
+
+    /**
+     * Verify order payment
+     */
+    public function verify(Request $request){
+        //find store by shortname and update payment status 
+        //if valid ref was found
+        $store = $this->storeModel->findStore($request->store);
+        $order = $this->storeModel->findOrder($request->order);
+
+        //confirm money has been received for the order
+        $order->payment_status = "Paid";
+
+        $verifiedPayment = json_decode(json_encode($this->storeModel->verify($store, $request)));
+        
+        //update transaction reference
+        $order->reference = $verifiedPayment->data->reference; 
+
+        $order->save();
+
+        $checkout = $store->url . $store->shortname."/checkout/?order=".$order->id."&status=complete";
+
+        if($verifiedPayment->data->status == "success"){
+            return redirect($checkout);
+        }else{
+            return redirect( str_replace("complete", "failed", $checkout) );
+        }
+    }
 }
