@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Store;
+namespace App\Models\Store\Payments;
 
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentMethods extends Model
+class Methods extends Model
 {
     use HasFactory;
 
