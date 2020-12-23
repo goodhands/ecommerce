@@ -21,4 +21,5 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => "store/{store}"], fu
     Route::post('/checkout', [OrdersController::class, 'checkout']);
 });
 
+//verify checkout payment
 Route::get('/checkout/verify', [OrdersController::class, 'verify']);
