@@ -19,19 +19,28 @@ trait Payments{
         $store->payment()->save($method, [
             'notes' => $data->notes,
             'channels' => json_encode($data->channels)
-        ]);        
+        ]);     
         
-        //since the parent is using the Secrets trait, we can just call it here
-        $secrets = [
-            'provider_type' => 'payment',
-            'provider_id' => $method->id
-        ];
-
-        $secrets['public_key'] = ($data->has('public_key')) ? $data->public_key : '';
-        $secrets['secret_key'] = ($data->has('secret_key')) ? $data->secret_key : '';
-        $secrets['api_key'] = ($data->has('api_key')) ? $data->api_key : '';
-
-        $secret = $this->addSecret($secrets, $store);
+        //if type is 3rd party and secrets don't exist
+        if($data->type == "3rd party"){
+            if(!$data->hasAny(['public_key', 'secret_key', 'api_key'])){
+                throw new Exception("A secret key or api must be passed along for payment methods using a 3rd party");
+            }
+        }
+        
+        //only need secrets for third parties
+        if($data->type == "3rd party"){
+            $secrets = [
+                'provider_type' => 'payment',
+                'provider_id' => $method->id
+            ];
+    
+            $secrets['public_key'] = ($data->has('public_key')) ? $data->public_key : '';
+            $secrets['secret_key'] = ($data->has('secret_key')) ? $data->secret_key : '';
+            $secrets['api_key'] = ($data->has('api_key')) ? $data->api_key : '';
+    
+            $this->addSecret($secrets, $store);
+        }
 
         return $method;
     }
