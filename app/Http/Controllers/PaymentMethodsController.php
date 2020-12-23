@@ -25,16 +25,14 @@ class PaymentMethodsController extends Controller
      */
     public function store(Store $store, Request $request){
         $request->validate([
-            'public_key' => 'string|required_without:api_key',
-            'secret_key' => 'string|required_without:api_key',
-            'api_key' => 'string|required_without:secret_key,public_key',
-            'methods' => 'required|array',
-            'id' => 'string|required', //the internal id of the provider [name + pay]
-        ]);
-
-        $request->request->add([
-            'label' => ucfirst(Str::before($request->id, '-')),
-            'active' => true
+            'public_key' => 'string|required_without:api_key|required_if:type,3rd party',
+            'secret_key' => 'string|required_without:api_key|required_if:type,3rd party',
+            'api_key' => 'string|required_without:secret_key,public_key|required_if:type,3rd party',
+            'channels' => 'required|array',
+            'active' => 'bool',
+            'notes' => 'string',
+            'type' => 'string', //this will be submitted with the form. although we are not saving it in the db
+            'id' => 'string|required', //the internal id of the provider [name-pay => paystack-pay]
         ]);
 
         $data = $this->storeModel->addPaymentMethod($request, $store);
@@ -42,6 +40,9 @@ class PaymentMethodsController extends Controller
         return $data;
     }
 
+    /**
+     * Get all payment methods belonging to the store
+     */
     public function index(Store $store){
         return $store->payment;
     }

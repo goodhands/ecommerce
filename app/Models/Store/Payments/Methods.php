@@ -3,6 +3,7 @@
 namespace App\Models\Store\Payments;
 
 use App\Models\Store;
+use App\Models\Store\Secrets;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,20 +11,22 @@ class Methods extends Model
 {
     use HasFactory;
 
-    protected $table = 'payment_methods';
+    protected $table = 'payments';
 
     protected $fillable = [
-        'label', 'active', 'methods', 'website', 'settings'
+        'label', 'name', 'type', 'rate', 'website', 'description'
     ];
 
     protected $casts = [
-        'methods' => 'array',
-        'active' => 'bool'
+        'active' => 'bool',
+        'channels' => 'array'
     ];
 
     public function store()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsToMany(Store::class, 'payment_store')->withPivot([
+            'notes', 'active', 'channels'
+        ]);
     }
 
     public function secret()

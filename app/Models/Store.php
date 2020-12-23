@@ -6,12 +6,13 @@ use App\Models\Store\Collections\Collections;
 use App\Models\Store\Customer;
 use App\Models\Store\DeliveryMethods;
 use App\Models\Store\Order;
-use App\Models\Store\PaymentMethods;
+use App\Models\Store\Payments\Methods;
 use App\Models\Store\Product;
 use App\Models\Store\Secrets;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -43,9 +44,10 @@ class Store extends Model
         return $this->hasMany(DeliveryMethods::class);
     }
 
-    public function payment(): HasMany
+    public function payment(): BelongsToMany
     {
-        return $this->hasMany(PaymentMethods::class)->where('active', 1);
+        return $this->belongsToMany(Methods::class, 'payment_store', 'store_id', 'payment_id')
+        ->withPivot(['notes', 'active', 'channels'])->where('active', 1);
     }
 
     public function collections(): HasMany

@@ -2,20 +2,25 @@
 
 namespace App\Repositories\Traits;
 
-use App\Models\Store\PaymentMethods;
+use App\Models\Store\Payments\Methods;
+use Illuminate\Support\Str;
 use Exception;
 
 trait Payments{
 
     public function addPaymentMethod($data, $store){
 
-        $method = PaymentMethods::create($data->only(['active', 'methods', 'label']));
-        
+        //fetch the method from db
+        $method = Methods::where('label', Str::before($data->id, '-'))->first();
+
         if(!$method) throw new Exception("An error occured while handling this request");
 
-        //attach to store
-        $store->payment()->save($method);
-
+        //attach payment method to store
+        $store->payment()->save($method, [
+            'notes' => $data->notes,
+            'channels' => $data->channels
+        ]);        
+        
         //since the parent is using the Secrets trait, we can just call it here
         $secrets = [
             'provider_type' => 'payment',
@@ -38,12 +43,14 @@ trait Payments{
         return $this->{"payWith".$provider}($data, $store, $order);
     }
 
+    public function payWithCoD($data, $store, $order){}
+
     public function payWithPaystack($data, $store, $order){
 
         $key = $store->secrets->where('provider_id', $data->payment_method)->first()->secret_key;
 
         //payment methods: this should give us paystack's id
-        $methods = $store->payment->where('id', $data->payment_method)->first()->methods;
+        $methods = $store->payment->where('id', $data->payment_method)->first()->pivot->channels;
 
         //retrieve customer details
         $amount = $order->total * 100; //we store the value in naira but convert it to kobo for Paystack
@@ -63,7 +70,7 @@ trait Payments{
                     ])
                 ]);
         
-        return response()->json([$res, $amount]);
+        return $res;
     }
 
     public function payWithFlutterwave($data, $store, $order){
@@ -72,9 +79,9 @@ trait Payments{
 
     public function verify($store, $request){
         //call the right verifier
-        $provider = PaymentMethods::find($request->provider);
+        $provider = $store->payment->where('id', $request->provider)->pluck('label')->first();
 
-        return $this->{"verify".$provider->label}($store, $request);
+        return $this->{"verify".$provider}($store, $request);
     }
 
     public function verifyPaystack($store, $request){

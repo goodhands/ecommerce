@@ -31,11 +31,21 @@ return [
             'require' => [
                 ['label' => 'Public Key', 'key' => 'public_key'],
                 ['label' => 'Secret key', 'key' => 'secret_key'],
+                ['label' => 'Notes', 'key' => 'notes'],
                 [
                     'label' => 'Methods', 'key' => 'methods',
                     'options' => $flutterOptions
-                ]
+                ],
             ]
         ]
-    ]
+        ],
+        'cod' => [
+            'id' => 'cod-pay', //cash-on-delivery
+            'description' => 'Pay with Cash on Delivery',
+            'settings' => [
+                'require' => [
+                    ['label' => 'Notes', 'key' => 'notes'],
+                ]
+            ]
+        ],
 ];

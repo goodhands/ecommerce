@@ -62,6 +62,9 @@ class OrdersController extends Controller
         //calculate order total and update the db
         $total = $this->storeModel->calculateTotal($order);
         
+        //returns some values based on the payment provider selected.
+        //3rd parties return a url to checkout
+        //manual returns payment instructions
         return $this->storeModel->acceptPayment($request, $store, $order);
     }
 
@@ -116,7 +119,7 @@ class OrdersController extends Controller
     }
 
     /**
-     * Verify order payment
+     * Verify order payment made using a 3rd party
      */
     public function verify(Request $request){
         //find store by shortname and update payment status 
