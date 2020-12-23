@@ -15,6 +15,11 @@ trait Payments{
 
         if(!$method) throw new Exception("An error occured while handling this request");
 
+        //check if payment provider has already been added
+        if($store->payment->contains('id', $method->id)){
+            throw new Exception("That payment provider has already been setup for this store.");
+        }
+
         //attach payment method to store
         $store->payment()->save($method, [
             'notes' => $data->notes,
