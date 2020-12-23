@@ -18,7 +18,7 @@ trait Payments{
         //attach payment method to store
         $store->payment()->save($method, [
             'notes' => $data->notes,
-            'channels' => $data->channels
+            'channels' => json_encode($data->channels)
         ]);        
         
         //since the parent is using the Secrets trait, we can just call it here
@@ -29,7 +29,7 @@ trait Payments{
 
         $secrets['public_key'] = ($data->has('public_key')) ? $data->public_key : '';
         $secrets['secret_key'] = ($data->has('secret_key')) ? $data->secret_key : '';
-        $secrets['api_key'] = ($data->has('api_key')) ? $method->api_key : '';
+        $secrets['api_key'] = ($data->has('api_key')) ? $data->api_key : '';
 
         $secret = $this->addSecret($secrets, $store);
 

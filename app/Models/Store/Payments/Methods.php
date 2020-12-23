@@ -26,7 +26,7 @@ class Methods extends Model
     {
         return $this->belongsToMany(Store::class, 'payment_store')->withPivot([
             'notes', 'active', 'channels'
-        ]);
+        ])->withTimestamps();
     }
 
     public function secret()

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Repositories\StoreRepository;
 use App\Models\Store;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class PaymentMethodsController extends Controller
 {
@@ -27,11 +26,15 @@ class PaymentMethodsController extends Controller
         $request->validate([
             'public_key' => 'string|required_without:api_key|required_if:type,3rd party',
             'secret_key' => 'string|required_without:api_key|required_if:type,3rd party',
-            'api_key' => 'string|required_without:secret_key,public_key|required_if:type,3rd party',
+            'api_key' => 'string|required_without_all:secret_key,public_key',
             'channels' => 'required|array',
             'active' => 'bool',
             'notes' => 'string',
-            'type' => 'string', //this will be submitted with the form. although we are not saving it in the db
+            //this will be submitted with the form. the value is 
+            //gotten from the config settings for the provider. 
+            //although we are not saving it in the db, it's useful
+            //for determinig how we should handle the request
+            'type' => 'string|required',
             'id' => 'string|required', //the internal id of the provider [name-pay => paystack-pay]
         ]);
 
