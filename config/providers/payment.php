@@ -5,11 +5,14 @@ $flutterOptions = ["account", "card", "banktransfer", "mpesa", "qr", "ussd", "cr
 
 return [
     'paystack' => [
+        'name' => 'Pay with Paystack',
         'website' => 'https://dashboard.paystack.com/',
         'id' => 'paystack-pay',
         'api' => 'https://api.paystack.co',
-        'description' => '',
+        'description' => 'Pay with Paystack',
         'method' => $paystackOptions,
+        'type' => '3rd party',
+        'rates' => '2%',
         'settings' => [
             'require' => [
                 ['label' => 'Public Key', 'key' => 'public_key'],
@@ -22,11 +25,14 @@ return [
         ]
     ],
     'flutterwave' => [
-        'website' => 'https://dashboard.flutterwave.com/',
-        'id' => 'flutter-pay',
-        'api' => 'https://api.paystack.co',
+        'name' => 'Pay with Flutterwave',
+        'website' => 'https://dashboard.flutterwave.co',
+        'id' => 'flutterwave-pay',
+        'api' => 'https://api.flutterwave.co',
         'method' => $flutterOptions,
-        'description' => '',
+        'description' => 'Pay with Flutterwave',
+        'type' => '3rd party',
+        'rates' => '2%',
         'settings' => [
             'require' => [
                 ['label' => 'Public Key', 'key' => 'public_key'],
@@ -38,14 +44,16 @@ return [
                 ],
             ]
         ]
-        ],
-        'cod' => [
-            'id' => 'cod-pay', //cash-on-delivery
-            'description' => 'Pay with Cash on Delivery',
-            'settings' => [
-                'require' => [
-                    ['label' => 'Notes', 'key' => 'notes'],
-                ]
+    ],
+    'cod' => [
+        'name' => 'Cash on Delivery',
+        'id' => 'cod-pay', //cash-on-delivery
+        'description' => 'Pay with Cash on Delivery',
+        'type' => 'manual',
+        'settings' => [
+            'require' => [
+                ['label' => 'Notes', 'key' => 'notes'],
             ]
-        ],
+        ]
+    ],
 ];

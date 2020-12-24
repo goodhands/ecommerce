@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PaymentMethodsController;
+use App\Models\Store;
+use App\Repositories\StoreRepository;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -10,4 +12,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
     Route::post('/store/{store}/providers/payment', [PaymentMethodsController::class, 'store']); 
     Route::get('/store/{store}/providers/payment', [PaymentMethodsController::class, 'index']); 
+});
+
+Route::get('/loadpayments', function () {
+    $s = new StoreRepository(new Store);
+    return $s->loadPaymentProvidersFromConfig();
 });

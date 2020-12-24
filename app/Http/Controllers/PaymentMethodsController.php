@@ -24,10 +24,10 @@ class PaymentMethodsController extends Controller
      */
     public function store(Store $store, Request $request){
         $request->validate([
-            'public_key' => 'string|required_without:api_key|required_if:type,3rd party',
-            'secret_key' => 'string|required_without:api_key|required_if:type,3rd party',
-            'api_key' => 'string|required_without_all:secret_key,public_key',
-            'channels' => 'required|array',
+            'public_key' => 'string|required_if:type,3rd party',
+            'secret_key' => 'string|required_if:type,3rd party',
+            'api_key' => 'string|required_without_all:secret_key,public_key|sometimes',
+            'channels' => 'array',
             'active' => 'bool',
             'notes' => 'string',
             //this will be submitted with the form. the value is 

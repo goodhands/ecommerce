@@ -9,6 +9,7 @@ use App\Models\Store\Order;
 use App\Models\Store\Payments\Methods;
 use App\Models\Store\Product;
 use App\Models\Store\Secrets;
+use App\Models\Store\Payments\Pivot\PaymentStore;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -47,7 +48,7 @@ class Store extends Model
     public function payment(): BelongsToMany
     {
         return $this->belongsToMany(Methods::class, 'payment_store', 'store_id', 'payment_id')
-        ->withPivot(['notes', 'active', 'channels'])->where('active', 1);
+                ->using(PaymentStore::class)->withPivot(['notes', 'active', 'channels'])->where('active', 1);
     }
 
     public function collections(): HasMany

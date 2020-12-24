@@ -8,6 +8,46 @@ use Exception;
 
 trait Payments{
 
+    /**
+     * We need to create a job that will handle this.
+     * 
+     * The job will be triggered by some endpoint that 
+     * will be called whenever a new config has been added
+     */
+    public function loadPaymentProvidersFromConfig(){
+        $providers = config('providers.payment');
+
+        foreach($providers as $provider){
+            $data['name'] = $provider['name'];
+            $data['description'] = $provider['description'];
+            $data['label'] = ucfirst(Str::before($provider['id'], '-'));
+            $data['type'] = $provider['type'];
+
+            //add 3rd party constraints
+            if($provider['type'] == "3rd party"){
+
+                if(!$provider['website'] || !$provider['rates']){
+                    throw new Exception("To register a 3rd party provider, you must provide the website and rate of the provider. In " . $provider['name']);
+                }
+
+                $data['website'] = $provider['website'];
+                $data['rates'] = $provider['rates'];
+            }else{
+                $data['website'] = null;
+                $data['rates'] = null;
+            }
+
+            //since label is unique, we will add a constraint with it
+            if(Methods::where('label', $data['label'])->exists()){
+                return false;
+            }
+
+            $result[] = Methods::create($data);
+        }
+
+        return $result;
+    }
+
     public function addPaymentMethod($data, $store){
 
         //fetch the method from db
@@ -23,7 +63,7 @@ trait Payments{
         //attach payment method to store
         $store->payment()->save($method, [
             'notes' => $data->notes,
-            'channels' => json_encode($data->channels)
+            'channels' => $data->channels
         ]);     
         
         //if type is 3rd party and secrets don't exist
@@ -64,7 +104,7 @@ trait Payments{
         $key = $store->secrets->where('provider_id', $data->payment_method)->first()->secret_key;
 
         //payment methods: this should give us paystack's id
-        $methods = $store->payment->where('id', $data->payment_method)->first()->pivot->channels;
+        $methods = (array) $store->payment->where('id', $data->payment_method)->first()->pivot->channels;
 
         //retrieve customer details
         $amount = $order->total * 100; //we store the value in naira but convert it to kobo for Paystack

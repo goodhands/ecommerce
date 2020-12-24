@@ -6,6 +6,7 @@ use App\Models\Store;
 use App\Models\Store\Secrets;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use PaymentStore;
 
 class Methods extends Model
 {
@@ -14,19 +15,12 @@ class Methods extends Model
     protected $table = 'payments';
 
     protected $fillable = [
-        'label', 'name', 'type', 'rate', 'website', 'description'
-    ];
-
-    protected $casts = [
-        'active' => 'bool',
-        'channels' => 'array'
+        'label', 'name', 'type', 'rates', 'website', 'description'
     ];
 
     public function store()
     {
-        return $this->belongsToMany(Store::class, 'payment_store')->withPivot([
-            'notes', 'active', 'channels'
-        ])->withTimestamps();
+        return $this->belongsToMany(Store::class, 'payment_store')->using(PaymentStore::class);
     }
 
     public function secret()
