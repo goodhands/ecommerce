@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Models\Store\Collections\Collections;
 use App\Models\Store\Customer;
-use App\Models\Store\DeliveryMethods;
+use App\Models\Store\Delivery\Methods as DeliveryMethods;
+use App\Models\Store\Delivery\Pivot\Store as DeliveryStore;
 use App\Models\Store\Order;
-use App\Models\Store\Payments\Methods;
+use App\Models\Store\Payments\Pivot\PaymentStore;
+use App\Models\Store\Payments\Methods as PaymentMethods;
 use App\Models\Store\Product;
 use App\Models\Store\Secrets;
-use App\Models\Store\Payments\Pivot\PaymentStore;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,14 +41,16 @@ class Store extends Model
         return $this->hasMany(Secrets::class);
     }
 
-    public function delivery(): HasMany
+    public function delivery(): BelongsToMany
     {
-        return $this->hasMany(DeliveryMethods::class);
+        return $this->belongsToMany(DeliveryMethods::class, 'delivery_store', 'store_id', 'delivery_id')
+                ->using(DeliveryStore::class)->withPivot(['flat_rate', 'notes', 'conditional_pricing', 'active'])
+                ->where('active', '1');
     }
 
     public function payment(): BelongsToMany
     {
-        return $this->belongsToMany(Methods::class, 'payment_store', 'store_id', 'payment_id')
+        return $this->belongsToMany(PaymentMethods::class, 'payment_store', 'store_id', 'payment_id')
                 ->using(PaymentStore::class)->withPivot(['notes', 'active', 'channels'])->where('active', 1);
     }
 

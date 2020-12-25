@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Models\Store;
+namespace App\Models\Store\Delivery;
 
 use App\Models\Store;
+use App\Models\Store\Delivery\Region;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DeliveryMethods extends Model
+class Methods extends Model
 {
     use HasFactory;
 
-    protected $table = 'delivery_methods';
+    protected $table = 'deliverys';
 
     protected $fillable = [
-        'label', 'active', 'store_id'
+        'name', 'description', 'label'
     ];
 
     protected $casts = [
@@ -23,6 +24,11 @@ class DeliveryMethods extends Model
     public function store()
     {
         return $this->belongsTo(Store::class);
+    }
+
+    public function region()
+    {
+        return $this->hasMany(Region::class, 'delivery_id', 'id');
     }
 
     public function secret()
