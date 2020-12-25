@@ -1,19 +1,6 @@
 <?php
 
     return [
-        'gokada' => [
-            'name' => 'Gokada Delivery',
-            'label' => 'gokada-delivery',
-            'description' => 'Shipping description here',
-            'website' => 'https://gokada.ng/',
-            'api' => 'https://api.gokada.ng/',
-            'type' => '3rd party',
-            'settings' => [
-                'require' => [
-                    ['label' => 'API Key', 'key' => 'api_key'],
-                ]
-            ]
-        ],
         'standard' => [
             'name' => 'Standard Delivery',
             'description' => 'Standard delivery, we will ship the order to your location. 
@@ -27,6 +14,19 @@
             'description' => 'Shipping description here',
             'label' => 'local-delivery',
             'type' => 'manual',
+        ],
+        'gokada' => [
+            'name' => 'Gokada Delivery',
+            'label' => 'gokada-delivery',
+            'description' => 'Shipping description here',
+            'website' => 'https://gokada.ng/',
+            'api' => 'https://api.gokada.ng/',
+            'type' => '3rd party',
+            'settings' => [
+                'require' => [
+                    ['label' => 'API Key', 'key' => 'api_key'],
+                ]
+            ]
         ],
         'pickup' => [
             'name' => 'Pickup',

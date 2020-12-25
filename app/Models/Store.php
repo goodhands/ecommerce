@@ -45,13 +45,16 @@ class Store extends Model
     {
         return $this->belongsToMany(DeliveryMethods::class, 'delivery_store', 'store_id', 'delivery_id')
                 ->using(DeliveryStore::class)->withPivot(['flat_rate', 'notes', 'conditional_pricing', 'active'])
+                ->withTimestamps()
                 ->where('active', '1');
     }
 
     public function payment(): BelongsToMany
     {
         return $this->belongsToMany(PaymentMethods::class, 'payment_store', 'store_id', 'payment_id')
-                ->using(PaymentStore::class)->withPivot(['notes', 'active', 'channels'])->where('active', 1);
+                ->using(PaymentStore::class)->withPivot(['notes', 'active', 'channels'])
+                ->withTimestamps()
+                ->where('active', 1);
     }
 
     public function collections(): HasMany

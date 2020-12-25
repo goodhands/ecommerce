@@ -14,7 +14,7 @@ class Methods extends Model
     protected $table = 'deliverys';
 
     protected $fillable = [
-        'name', 'description', 'label'
+        'name', 'description', 'label', 'website', 'type'
     ];
 
     protected $casts = [

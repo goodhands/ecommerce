@@ -9,6 +9,7 @@ use App\Models\Store;
 use App\Repositories\Traits\Products as HasProducts;
 use App\Repositories\Traits\Collections as HasCollections;
 use App\Repositories\Traits\Customers as HasCustomers;
+use App\Repositories\Traits\Delivery as HasDelivery;
 use App\Repositories\Traits\Orders as HasOrders;
 use App\Repositories\Traits\Payments as HasPayments;
 use App\Repositories\Traits\Secrets as HasSecrets;
@@ -16,7 +17,7 @@ use Exception;
 
 class StoreRepository{
 
-    use HasProducts, HasCollections, HasCustomers, HasSecrets, HasPayments, HasOrders;
+    use HasProducts, HasCollections, HasCustomers, HasSecrets, HasPayments, HasOrders, HasDelivery;
 
     public function __construct(Store $store)
     {

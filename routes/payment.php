@@ -14,6 +14,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/store/{store}/providers/payment', [PaymentMethodsController::class, 'index']); 
 });
 
+/**
+ * Load all payment methods we have in the config
+ */
 Route::get('/loadpayments', function () {
     $s = new StoreRepository(new Store);
     return $s->loadPaymentProvidersFromConfig();

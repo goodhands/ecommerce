@@ -41,3 +41,6 @@ require __DIR__ .'/secrets.php';
 
 //Payment Methods
 require __DIR__ . '/payment.php';
+
+//Delivery Methods
+require __DIR__ . '/delivery.php';
