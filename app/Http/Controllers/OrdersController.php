@@ -64,7 +64,7 @@ class OrdersController extends Controller
         //////////////////////////////////////////
 
         //get the delivery fees
-        $delivery = $this->resolveDeliveryProvider($request->delivery_method);
+        $delivery = $this->storeModel->resolveDeliveryProvider($store, $request->delivery_method);
 
         $this->storeModel->calculateTotal($order, $delivery);
         

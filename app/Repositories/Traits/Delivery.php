@@ -50,8 +50,8 @@ trait Delivery{
         return $storeDelivery;
     }
 
-    public function resolveDeliveryProvider($label){
+    public function resolveDeliveryProvider($store, $id){
         //returns an instance of the Methods class
-        return Methods::where('label', $label)->first();
+        return $store->delivery->where('id', $id)->first();
     }
 }

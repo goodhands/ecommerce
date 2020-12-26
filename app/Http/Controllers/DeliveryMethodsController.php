@@ -28,4 +28,8 @@ class DeliveryMethodsController extends Controller
 
         return $this->storeModel->addDeliveryMethods($request->all(), $store);
     }
+
+    public function index(Store $store){
+        return $store->delivery;
+    }
 }

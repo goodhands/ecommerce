@@ -7,4 +7,5 @@ Route::get('/deliveries/boot', [DeliveryMethodsController::class, 'loadMethods']
 
 Route::group(['prefix' => '/store/{store}', 'middleware' => ['auth:sanctum']], function () {
     Route::post('/providers/delivery', [DeliveryMethodsController::class, 'store']);
+    Route::get('/providers/delivery', [DeliveryMethodsController::class, 'index']);
 });

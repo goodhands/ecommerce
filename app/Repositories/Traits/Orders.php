@@ -12,8 +12,10 @@ trait Orders{
         foreach($order->products as $product){
             $productTotal[] = $product->price * $product->pivot->quantity;
         }
+
+        $total = array_sum($productTotal) + $delivery->pivot->flat_rate;
         
-        $order->total = array_sum($productTotal) + $delivery->flat_rate;
+        $order->total = $total;
         
         $order->save();
     }
