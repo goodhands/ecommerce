@@ -49,4 +49,9 @@ trait Delivery{
 
         return $storeDelivery;
     }
+
+    public function resolveDeliveryProvider($label){
+        //returns an instance of the Methods class
+        return Methods::where('label', $label)->first();
+    }
 }

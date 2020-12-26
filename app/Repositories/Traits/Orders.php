@@ -5,7 +5,7 @@ namespace App\Repositories\Traits;
 use App\Models\Store\Order;
 
 trait Orders{
-    public function calculateTotal($order){
+    public function calculateTotal($order, $delivery){
 
         $productTotal = [];
 
@@ -13,7 +13,7 @@ trait Orders{
             $productTotal[] = $product->price * $product->pivot->quantity;
         }
         
-        $order->total = array_sum($productTotal);
+        $order->total = array_sum($productTotal) + $delivery->flat_rate;
         
         $order->save();
     }

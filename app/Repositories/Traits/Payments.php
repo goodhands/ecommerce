@@ -97,7 +97,9 @@ trait Payments{
         return $this->{"payWith".$provider}($data, $store, $order);
     }
 
-    public function payWithCoD($data, $store, $order){}
+    public function payWithCoD($data, $store, $order){
+        return $store->payment->where('id', $data->payment_method)->first()->notes;
+    }
 
     public function payWithPaystack($data, $store, $order){
 

@@ -59,8 +59,14 @@ class OrdersController extends Controller
             $order->products()->attach($product['product'], ['quantity' => $product['qty']]);
         }
 
+        //////////////////////////////////////////
         //calculate order total and update the db
-        $total = $this->storeModel->calculateTotal($order);
+        //////////////////////////////////////////
+
+        //get the delivery fees
+        $delivery = $this->resolveDeliveryProvider($request->delivery_method);
+
+        $this->storeModel->calculateTotal($order, $delivery);
         
         //returns some values based on the payment provider selected.
         //3rd parties return a url to checkout
