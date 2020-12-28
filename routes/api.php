@@ -44,3 +44,6 @@ require __DIR__ . '/payment.php';
 
 //Delivery Methods
 require __DIR__ . '/delivery.php';
+
+//Dashboard Methods
+require __DIR__ . '/dashboard.php';

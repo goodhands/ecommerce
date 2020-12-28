@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\CalculateOrderTotal;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\Store\Customer;
 use App\Models\Store\Order;
 use App\Repositories\StoreRepository;
+use Carbon\Carbon;
+use Exception;
+
 class OrdersController extends Controller
 {
     private $paymentService;
 
-    public function __construct(StoreRepository $store)
+    public function __construct(StoreRepository $store, Carbon $carbon)
     {    
         $this->storeModel = $store;
+        $this->carbon = $carbon;
     }
 
     /**
@@ -114,24 +117,35 @@ class OrdersController extends Controller
         //make sure only the admin can do this
         $this->storeModel->userHasAccess($store);
 
-        //get sorting query
-        if($request->has(['sort', 'fulfilled'])){
-            $response = $store->orders()->whereFulfilled($request->fulfilled)
-                                        ->{"orderBy".$request->sort}('created_at');
-        }
+        //prepare all subsequent modifiers
+        $response = $store->orders();
 
-        if($request->has(['sort', 'fulfilled'])){
-            $response = $store->orders()->wherePaymentStatus($request->payment_status)
-                                        ->{"orderBy".$request->sort}('created_at');
+        //get sorting query
+        if($request->has('fulfilled')){
+            $response = $response->whereFulfilled($request->fulfilled);
         }
 
         //get results without sorting
         if($request->has('payment_status')){
-            $response = $store->orders()->wherePaymentStatus($request->payment_status);
+            $response = $response->wherePaymentStatus($request->payment_status);
         }
 
         if($request->has('fulfilled')){
-            $response = $store->orders()->whereFulfilled($request->fulfilled);
+            $response = $response->whereFulfilled($request->fulfilled);
+        }
+
+        if($request->has('sort')){
+            $response = $response->{"orderBy".$request->sort}('created_at');
+        }
+
+        //validation to enforce the use of to & from in the same query
+        if($request->hasAny(['from', 'to']) && !$request->has('from') || !$request->has('to')){
+            throw new Exception("The from key and to key must be paired. You can't use one without the other");
+        }
+        
+        if($request->has(['from', 'to'])){
+            $response = $response->whereBetween('created_at', 
+                                    [$this->carbon->parse($request->from), $this->carbon->parse($request->to)]);
         }
 
         if($response){
