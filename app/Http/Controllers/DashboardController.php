@@ -19,9 +19,13 @@ class DashboardController extends Controller
         //sales involves where payment was confirmed
         $salesQuery = $store->orders()->where('payment_status', 'Paid');
 
-        $response['total'] = $salesQuery->pluck('total')->sum(); 
-        
+        $response['sales_total'] = $salesQuery->pluck('total')->sum(); 
+        $response['sales_link'] = config('app.url') . '/orders?fulfiled=1&sort=Desc&from=last week&to=today';
+
         $response['customers'] = $store->customers()->whereDate('created_at', $this->carbon->subWeek())->paginate(20);
+        $response['customers_link'] = config('app.url') . '/customers?sort=Desc&from=last week&to=today';
+
+        //TODO:set up google analytics
 
         return $response;
     }

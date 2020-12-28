@@ -139,7 +139,7 @@ class OrdersController extends Controller
         }
 
         //validation to enforce the use of to & from in the same query
-        if($request->hasAny(['from', 'to']) && !$request->has('from') || !$request->has('to')){
+        if($request->hasAny(['from', 'to']) && (!$request->filled('from') || !$request->filled('to'))){
             throw new Exception("The from key and to key must be paired. You can't use one without the other");
         }
         
