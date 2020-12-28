@@ -110,9 +110,33 @@ class OrdersController extends Controller
     /**
      * Show all orders
      */
-    public function index(Store $store){
+    public function index(Store $store, Request $request){
         //make sure only the admin can do this
         $this->storeModel->userHasAccess($store);
+
+        //get sorting query
+        if($request->has(['sort', 'fulfilled'])){
+            $response = $store->orders()->whereFulfilled($request->fulfilled)
+                                        ->{"orderBy".$request->sort}('created_at');
+        }
+
+        if($request->has(['sort', 'fulfilled'])){
+            $response = $store->orders()->wherePaymentStatus($request->payment_status)
+                                        ->{"orderBy".$request->sort}('created_at');
+        }
+
+        //get results without sorting
+        if($request->has('payment_status')){
+            $response = $store->orders()->wherePaymentStatus($request->payment_status);
+        }
+
+        if($request->has('fulfilled')){
+            $response = $store->orders()->whereFulfilled($request->fulfilled);
+        }
+
+        if($response){
+            return $response->paginate(20);
+        }
 
         return $store->orders()->paginate(20);
     }
