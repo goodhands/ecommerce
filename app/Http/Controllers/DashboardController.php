@@ -20,13 +20,20 @@ class DashboardController extends Controller
         $salesQuery = $store->orders()->where('payment_status', 'Paid');
 
         $response['sales_total'] = $salesQuery->pluck('total')->sum(); 
-        $response['sales_link'] = config('app.url') . '/orders?fulfiled=1&sort=Desc&from=last week&to=today';
+        $response['sales_link'] = 'orders?fulfiled=1&sort=Desc&from=last week&to=today';
 
-        $response['customers'] = $store->customers()->whereDate('created_at', $this->carbon->subWeek())->paginate(20);
-        $response['customers_link'] = config('app.url') . '/customers?sort=Desc&from=last week&to=today';
+        $response['new_orders'] = $store->orders()
+                                    ->wherePaymentStatus('Paid')
+                                    ->whereFulfilled(false)
+                                    ->whereDate('created_at', $this->carbon->subWeek())->count();
+
+        //last 7 days
+        $response['customers'] = $store->customers()->whereDate('created_at', $this->carbon->subWeek())->count();
+
+        $response['customers_link'] = 'customers?sort=Desc&from=last week&to=today';
 
         //TODO:set up google analytics
 
-        return $response;
+        return collect($response)->toArray();
     }
 }
