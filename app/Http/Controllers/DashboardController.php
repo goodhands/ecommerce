@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $salesQuery = $store->orders()->where('payment_status', 'Paid');
 
         $response['sales_total'] = $salesQuery->pluck('total')->sum(); 
-        $response['sales_link'] = 'orders?fulfiled=1&sort=Desc&from=last week&to=today';
+        $response['sales_link'] = 'orders?fulfilled=1&sort=Desc&from=last week&to=today';
 
         $response['new_orders'] = $store->orders()
                                     ->wherePaymentStatus('Paid')
@@ -35,5 +35,23 @@ class DashboardController extends Controller
         //TODO:set up google analytics
 
         return collect($response)->toArray();
+    }
+
+    /**
+     * Returns 3 recent order with other meta data 
+     * to see all
+     */
+    public function getRecentOrders(Store $store, Request $request){
+        $query = $store->orders()->where('fulfilled', false)
+                            ->where('payment_status', 'Paid');
+        $data['orders'] = $query->with(['products', 'customer'])->latest()->get();
+        $data['orders_count'] = $query->count();
+
+        //max is 3. if more than 3, show link to see others
+        if($data['orders_count'] > 3){
+            $data['full_orders_link'] = "/orders?sort=DESC&fulfilled=0&paid=true";
+        }
+
+        return $data;
     }
 }

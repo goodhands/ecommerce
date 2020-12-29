@@ -134,6 +134,16 @@ class OrdersController extends Controller
             $response = $response->whereFulfilled($request->fulfilled);
         }
 
+        if($request->has('paid')){
+
+            if($request->paid !== 'true'){
+                $response = $response->where('payment_status', '!=', 'Paid');
+            }
+
+            $response = $response->wherePaymentStatus('Paid');
+
+        }
+
         if($request->has('sort')){
             $response = $response->{"orderBy".$request->sort}('created_at');
         }
