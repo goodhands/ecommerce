@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Store;
 use App\Models\Store\Product;
+use Exception;
 
 class ProductController extends Controller
 {
@@ -78,8 +79,22 @@ class ProductController extends Controller
         return $product;
     }
 
+    /**
+     * Get details about a product
+     */
     public function getProductByShortname(Request $request, Store $shortname, $slug){
-        return $shortname->products->where('shortname', $slug)->first();
+        //returns an instance of App\Models\Store\Product so we can interact w it
+        $product = $shortname->products->where('shortname', $slug)->first();
+
+        if(!$product){
+            throw new Exception("The requested product could not be found");
+        }
+
+        $product->views += 1;
+
+        $product->save();
+
+        return $product;
     }
 
     /**
