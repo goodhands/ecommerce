@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function (
     Route::put('/', [StoreController::class, 'update']);
 
     // interact with the products
+    Route::get('/{shortname}/products/id/{id}', [ProductController::class, 'getProductById']);
     Route::get('/{shortname}/products/{slug}', [ProductController::class, 'getProductByShortname']);
     Route::get('/{shortname}/products', [ProductController::class, 'index']);
     Route::post('/{shortname}/products/', [ProductController::class, 'createProduct']);

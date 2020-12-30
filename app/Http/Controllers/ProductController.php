@@ -80,7 +80,9 @@ class ProductController extends Controller
     }
 
     /**
-     * Get details about a product
+     * This method is used to get product details for the customer.
+     * For getting the details for the admin see @getProductById()
+     * Get details about a product, increment the count, etc.
      */
     public function getProductByShortname(Request $request, Store $shortname, $slug){
         //returns an instance of App\Models\Store\Product so we can interact w it
@@ -95,6 +97,14 @@ class ProductController extends Controller
         $product->save();
 
         return $product;
+    }
+
+    /**
+     * Get product by ID for the admin to interact with id/{id}
+     * We are not incrementing ID here, cos 'a-d-m-i-n'
+     */
+    public function getProductById(Request $request, Store $shortname, Product $id){
+        return $id;
     }
 
     /**
