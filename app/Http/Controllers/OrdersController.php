@@ -8,7 +8,9 @@ use App\Models\Store\Customer;
 use App\Models\Store\Order;
 use App\Repositories\StoreRepository;
 use Carbon\Carbon;
+use Spatie\QueryBuilder\QueryBuilder;
 use Exception;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class OrdersController extends Controller
 {
@@ -117,52 +119,14 @@ class OrdersController extends Controller
         //make sure only the admin can do this
         $this->storeModel->userHasAccess($store);
 
-        //prepare all subsequent modifiers
-        $response = $store->orders();
+        $response = QueryBuilder::for($store->orders())
+                    ->allowedFilters(
+                        AllowedFilter::exact('fulfilled'),
+                        AllowedFilter::scope('paid'),
+                        AllowedFilter::scope('date_between')
+                    )->get();
 
-        //get sorting query
-        if($request->has('fulfilled')){
-            $response = $response->whereFulfilled($request->fulfilled);
-        }
-
-        //get results without sorting
-        if($request->has('payment_status')){
-            $response = $response->wherePaymentStatus($request->payment_status);
-        }
-
-        if($request->has('fulfilled')){
-            $response = $response->whereFulfilled($request->fulfilled);
-        }
-
-        if($request->has('paid')){
-
-            if($request->paid !== 'true'){
-                $response = $response->where('payment_status', '!=', 'Paid');
-            }
-
-            $response = $response->wherePaymentStatus('Paid');
-
-        }
-
-        if($request->has('sort')){
-            $response = $response->{"orderBy".$request->sort}('created_at');
-        }
-
-        //validation to enforce the use of to & from in the same query
-        if($request->hasAny(['from', 'to']) && (!$request->filled('from') || !$request->filled('to'))){
-            throw new Exception("The from key and to key must be paired. You can't use one without the other");
-        }
-        
-        if($request->has(['from', 'to'])){
-            $response = $response->whereBetween('created_at', 
-                                    [$this->carbon->parse($request->from), $this->carbon->parse($request->to)]);
-        }
-
-        if($response){
-            return $response->paginate(20);
-        }
-
-        return $store->orders()->paginate(20);
+        return $response;
     }
 
     /**

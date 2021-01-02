@@ -2,6 +2,8 @@
 
 namespace App\Models\Store;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,5 +40,19 @@ class Order extends Model
     public function getRouteKeyName()
     {
         return 'id';
+    }
+
+    public function scopePaid(Builder $query, $paymentStatus){
+        if($paymentStatus){
+            $result = $query->where('payment_status', 'Paid');
+        }else{
+            $result = $query->where('payment_status', '!=', 'Paid');
+        }
+
+        return $result; 
+    }
+
+    public function scopeDateBetween(Builder $query, $start, $end){
+        return $query->whereBetween('created_at', [Carbon::parse($start), Carbon::parse($end)]);
     }
 }
