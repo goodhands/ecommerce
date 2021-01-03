@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\Store;
 
 class LoginRequest extends FormRequest
 {
@@ -31,6 +32,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => 'required|string|email',
             'password' => 'required|string',
+            'store' => 'required|string',
         ];
     }
 
@@ -44,6 +46,22 @@ class LoginRequest extends FormRequest
     public function authenticate()
     {
         $this->ensureIsNotRateLimited();
+
+        $store = Store::where('shortname', $this->store)->first();
+
+        if(!$store){
+            throw ValidationException::withMessages([
+                'store' => "Sorry! We couldn't find the store with that name",
+            ]);
+        }
+
+        $user = $store->users()->where('email', $this->email);
+
+        if(!$user){
+            throw ValidationException::withMessages([
+                'store' => "Your credentials do not match this store's admins",
+            ]);
+        }
 
         if (! Auth::attempt($this->only('email', 'password'), $this->filled('remember'))) {
             RateLimiter::hit($this->throttleKey());

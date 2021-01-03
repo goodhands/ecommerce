@@ -124,7 +124,10 @@ class OrdersController extends Controller
                         AllowedFilter::exact('fulfilled'),
                         AllowedFilter::scope('paid'),
                         AllowedFilter::scope('date_between')
-                    )->get();
+                    )
+                    ->defaultSort('created_at')
+                    ->allowedSorts(['created_at'])
+                    ->get();
 
         return $response;
     }
