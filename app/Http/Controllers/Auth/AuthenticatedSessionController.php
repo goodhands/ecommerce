@@ -32,7 +32,12 @@ class AuthenticatedSessionController extends Controller
 
             $request->session()->regenerate();
 
-            return auth()->user();
+            return response()->json(
+                [
+                    "user" => auth()->user(), 
+                    "store" => auth()->user()->store()->where('shortname', $request->store)->first()
+                ]); 
+            
     }
 
     /**
