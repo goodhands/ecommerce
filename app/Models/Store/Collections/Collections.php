@@ -15,6 +15,10 @@ class Collections extends Model
         'name', 'shortname', 'createdBy', 'hasAutomation', 'description'
     ];
     
+    protected $casts = [
+        'media' => 'array'
+    ];
+
     use HasFactory;
 
     public function categories()

@@ -47,3 +47,6 @@ require __DIR__ . '/delivery.php';
 
 //Dashboard Methods
 require __DIR__ . '/dashboard.php';
+
+//Customer route
+require __DIR__ . '/customer.php';

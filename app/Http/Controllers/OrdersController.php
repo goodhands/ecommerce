@@ -127,6 +127,7 @@ class OrdersController extends Controller
                     )
                     ->defaultSort('created_at')
                     ->allowedSorts(['created_at'])
+                    ->with(['products', 'customer'])
                     ->get();
 
         return $response;

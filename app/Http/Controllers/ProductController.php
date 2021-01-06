@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Repositories\StoreRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Spatie\QueryBuilder\QueryBuilder;
 use App\Models\Store;
 use App\Models\Store\Product;
 use Exception;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class ProductController extends Controller
 {
@@ -71,7 +73,8 @@ class ProductController extends Controller
 
         //automatically generate shortname based on name and random string
         $request->request->add([
-            'shortname' => Str::slug($request->name) .'-'. rand(0001, 9999)
+            'shortname' => Str::slug($request->name) .'-'. rand(0001, 9999),
+            'status' => 'published'
         ]);
 
         $product = $this->store->addProducts($request->except('productId', 'step'), $shortname, $request->productId);
@@ -111,6 +114,14 @@ class ProductController extends Controller
      * Get all products
      */
     public function index(Store $shortname){
-        return $shortname->products;
+        $response = QueryBuilder::for($shortname->products())
+                    ->allowedFilters(
+                        AllowedFilter::scope('date_between')
+                    )
+                    ->allowedFields(['id', 'name', 'views'])
+                    ->allowedSorts(['views', 'created_at'])
+                    ->get();
+
+        return $response;
     }
 }

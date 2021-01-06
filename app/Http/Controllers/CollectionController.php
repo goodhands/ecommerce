@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Store;
 use App\Models\Store\Collections\Collections;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class CollectionController extends Controller
 {
@@ -41,7 +43,16 @@ class CollectionController extends Controller
     }
 
     public function index(Store $shortname){
-        return $shortname->collections()->paginate(3);
+        $response = QueryBuilder::for($shortname->collections())
+        ->allowedFilters(
+            AllowedFilter::exact('description'),
+        )
+        ->defaultSort('created_at')
+        ->allowedSorts(['created_at'])
+        ->withCount('products')
+        ->get();
+
+        return $response;
     }
 
     public function search(Store $shortname, $keyword){
