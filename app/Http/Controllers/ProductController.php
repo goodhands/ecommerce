@@ -68,7 +68,10 @@ class ProductController extends Controller
             "name" => "required|string|max:200",
             "productId" => "required|integer",
             "price" => "required|integer",
-            "description" => "required|string"
+            "description" => "required|string",
+            "stock" => "integer",
+            "discount" => "integer",
+            "collection_id" => "integer",
         ]);
 
         //automatically generate shortname based on name and random string
