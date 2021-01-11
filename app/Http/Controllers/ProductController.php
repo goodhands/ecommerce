@@ -116,7 +116,8 @@ class ProductController extends Controller
     public function index(Store $shortname){
         $response = QueryBuilder::for($shortname->products())
                     ->allowedFilters(
-                        AllowedFilter::scope('date_between')
+                        AllowedFilter::scope('date_between'),
+                        AllowedFilter::exact('status')
                     )
                     ->allowedFields(['id', 'name', 'views'])
                     ->allowedSorts(['views', 'created_at'])
