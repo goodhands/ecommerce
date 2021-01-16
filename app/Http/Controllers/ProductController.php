@@ -120,7 +120,8 @@ class ProductController extends Controller
         $response = QueryBuilder::for($shortname->products())
                     ->allowedFilters(
                         AllowedFilter::scope('date_between'),
-                        AllowedFilter::exact('status')
+                        AllowedFilter::exact('status'),
+                        AllowedFilter::exact('id')
                     )
                     ->allowedFields(['id', 'name', 'views'])
                     ->allowedSorts(['views', 'created_at'])

@@ -5,6 +5,7 @@ namespace App\Models\Store;
 use App\Models\Store;
 use App\Models\Store\Category\Category;
 use App\Models\Store\Collections\Collections;
+use App\Models\Store\Products\Inventory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,5 +44,9 @@ class Product extends Model
 
     public function scopeDateBetween(Builder $query, $start, $end){
         return $query->whereBetween('created_at', [Carbon::parse($start), Carbon::parse($end)]);
+    }
+
+    public function inventory(){
+        return $this->hasMany(Inventory::class);
     }
 }
