@@ -27,4 +27,11 @@ trait Products{
 
         return $product;
     }
+
+    public function updateProduct($data, $productId){
+        $product = Product::where('id', $productId)
+                            ->update($data);
+
+        if($product) return true;
+    }
 }

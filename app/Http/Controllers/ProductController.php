@@ -54,13 +54,32 @@ class ProductController extends Controller
             'productId' => 'required|integer'
         ]);
         
+        $files = $request->file('files');
+
         $responses = array();
 
-        foreach($request->file('files') as $file){
-            $responses[] = $file->storeOnCloudinary('commerce')->getSecurePath();
+        if(is_array($files)) {
+            foreach($files as $file){
+                $responses[] = $file->storeOnCloudinary('commerce')->getSecurePath();
+            }            
+        }else {
+            $responses = $files->storeOnCloudinary('commerce')->getSecurePath();
         }
 
+
         return $responses;
+    }
+
+    public function updateProductMedia(Request $request, Store $shortname, $id){
+        $files = $this->uploadMedia($request);
+
+        $data = [
+            'media_library' => $files
+        ];
+
+        // $this->store->updateProduct($data, $id);
+
+        return $files;
     }
 
     public function store($request, $shortname){

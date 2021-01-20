@@ -6,6 +6,7 @@ use App\Models\Store;
 use App\Models\Store\Category\Category;
 use App\Models\Store\Collections\Collections;
 use App\Models\Store\Products\Inventory;
+use App\Models\Store\Products\Variant;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +21,8 @@ class Product extends Model
 
     protected $fillable = [
         'name', 'shortname', 'price', 'discount', 'product_type', 'media_library',
-        'description', 'collection_id', 'category_id', 'status', 'stock', 'sku'
+        'description', 'collection_id', 'category_id', 'status', 'stock', 'sku',
+        'weight', 'isbn'
     ];
 
     protected $casts = [
@@ -48,5 +50,9 @@ class Product extends Model
 
     public function inventory(){
         return $this->hasMany(Inventory::class);
+    }
+
+    public function variant(){
+        return $this->hasMany(Variant::class);
     }
 }

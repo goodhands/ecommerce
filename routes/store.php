@@ -28,6 +28,9 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function (
     Route::get('/{shortname}/products', [ProductController::class, 'index']);
     Route::post('/{shortname}/products/', [ProductController::class, 'createProduct']);
 
+    // update product information
+    Route::post('{shortname}/products/{id}/media', [ProductController::class, 'updateProductMedia']);
+
     //collections
     Route::post('/{shortname}/collections', [CollectionController::class, 'store']);
     Route::get('/{shortname}/collections', [CollectionController::class, 'index']);

@@ -6,6 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateProductVariantTable extends Migration
 {
+
+    /**
+        variant:{
+            color:{
+                blue: {
+                    price: 10,
+                    stock: 2
+                }
+            }
+        }
+
+        variant:{
+            0:{
+                price: 1000,
+                stock: 2,
+                variations:{
+                    color: Red,
+                    size: Blue
+                }
+            },
+            1:{
+
+            }
+        } 
+    */
+
     /**
      * Run the migrations.
      *
@@ -14,7 +40,6 @@ class CreateProductVariantTable extends Migration
     public function up()
     {
         Schema::create('product_variant', function (Blueprint $table) {
-            $table->unsignedBigInteger('product_id'); //Gucci Bag
             $table->unsignedBigInteger('variant_id'); //Size
             $table->string('variant'); //MD | SM | XL | LG
             $table->string('stock'); //12
