@@ -16,6 +16,7 @@ class VariantInventory extends Model
     ];
 
     protected $casts = [
-        'media' => 'array'
+        'media' => 'array',
+        'variant' => 'array'
     ];
 }

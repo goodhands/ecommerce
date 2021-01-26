@@ -99,7 +99,7 @@ class ProductController extends Controller
             'status' => 'published'
         ]);
 
-        $product = $this->store->addProducts($request->except('productId', 'step'), $shortname, $request->productId);
+        $product = $this->store->addProducts($request, $shortname, $request->productId);
         
         return $product;
     }
