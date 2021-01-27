@@ -7,6 +7,7 @@ use App\Models\Store\Category\Category;
 use App\Models\Store\Collections\Collections;
 use App\Models\Store\Products\Inventory;
 use App\Models\Store\Products\Variant;
+use App\Models\Store\Products\VariantInventory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,5 +55,10 @@ class Product extends Model
 
     public function variant(){
         return $this->hasMany(Variant::class);
+    }
+
+    // Each variant has its own stock and other details
+    public function variantInventory(){
+        return $this->hasMany(VariantInventory::class);
     }
 }

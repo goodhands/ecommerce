@@ -20,11 +20,6 @@ class Variant extends Model
         'type', 'product_id', 'values'
     ];
 
-    // Each variant has its own stock and other details
-    public function inventory(){
-        return $this->hasMany(VariantInventory::class);
-    }
-
     //Variants belong to a product
     public function product(){
         return $this->belongsTo(Product::class);

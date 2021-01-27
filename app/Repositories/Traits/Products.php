@@ -35,8 +35,8 @@ trait Products{
         //attach product to store
         $store->products()->save($product);
 
-        //attach variant and inventory relationship to response
-        $product->load('variant.inventory');
+        //attach variant, inventory and variantInventory relationship to response
+        $product->load('variant', 'inventory', 'variantInventory');
 
         return $product;
     }
@@ -55,25 +55,57 @@ trait Products{
 
         //first create the parent variant(s)
         foreach($variantTypes as $variantType){
-            $variant = Variant::create([
+            //reusable data to verify if variant exists
+            $verifyVariant = [
+                'product_id' => $product->id,
                 'type' => $variantType['type'],
-                'values' => $variantType['tags'],
-                'product_id' => $product->id
-            ]);
+            ];
 
-            //add inventory
-            foreach($variantInventory as $vInventory){
+            //first check if the variant already exists
+            $exists = Variant::where($verifyVariant)->exists();
+
+            if($exists){
+                //if it already, exists update the values
+                $variant = Variant::where($verifyVariant)->update([
+                    'values' => $variantType['tags'],
+                ]);
+            }else{
+                $variant = Variant::create([
+                    'type' => $variantType['type'],
+                    'values' => $variantType['tags'],
+                    'product_id' => $product->id
+                ]);
+            }
+        }
+
+        // add inventory, Inventory is independent of variants
+        // because they contain enough information needed about
+        // the variant(s) they are referencing
+        foreach($variantInventory as $vInventory){
+            //check if variant-inventory exists before adding
+            $verifyInventory = [
+                'variant' => $vInventory['variant'],
+            ];
+
+            $inventoryExists = VariantInventory::where($verifyInventory)->exists();
+
+            if($inventoryExists){
+                //if it already exists, the data we wanna update is
+                //probably the stock, price or media
+                VariantInventory::where($verifyInventory)
+                                            ->update([
+                                                'stock' => $vInventory['stock'],
+                                                'price' => $vInventory['price'],
+                                                'media' => '[]'
+                                            ]);
+            }else{
                 //now add variant inventory
-                $inventory = VariantInventory::create([
-                    'variant_id' => $variant->id,
+                VariantInventory::create([
                     'variant' => $vInventory['variant'],
                     'stock' => $vInventory['stock'],
                     'price' => $vInventory['price'],
                     'media' => '[]'
                 ]);
-
-                //attach the variant_id to inventory
-                $variant->inventory()->save($inventory);
             }
         }
 
