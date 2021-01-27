@@ -85,6 +85,7 @@ trait Products{
             //check if variant-inventory exists before adding
             $verifyInventory = [
                 'variant' => $vInventory['variant'],
+                'product_id' => $product->id,
             ];
 
             $inventoryExists = VariantInventory::where($verifyInventory)->exists();
@@ -102,6 +103,7 @@ trait Products{
                 //now add variant inventory
                 VariantInventory::create([
                     'variant' => $vInventory['variant'],
+                    'product_id' => $product->id,
                     'stock' => $vInventory['stock'],
                     'price' => $vInventory['price'],
                     'media' => '[]'

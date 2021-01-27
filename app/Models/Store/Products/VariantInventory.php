@@ -12,7 +12,7 @@ class VariantInventory extends Model
     protected $table = 'variant_inventory';
 
     protected $fillable = [
-        'variant_id', 'variant', 'stock', 'price', 'media'
+        'variant_id', 'variant', 'stock', 'price', 'media', 'product_id'
     ];
 
     protected $casts = [

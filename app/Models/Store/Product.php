@@ -20,6 +20,8 @@ class Product extends Model
 
     protected $table = 'store_product';
 
+    protected $with = ['inventory', 'variant', 'variantInventory'];
+
     protected $fillable = [
         'name', 'shortname', 'price', 'discount', 'product_type', 'media_library',
         'description', 'collection_id', 'category_id', 'status', 'stock', 'sku',
