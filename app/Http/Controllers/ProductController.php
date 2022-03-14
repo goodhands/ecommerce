@@ -24,7 +24,7 @@ class ProductController extends Controller
      * 2) Upload product images library and dispatch event once it's finished
      * 3) Add other product details including:
      * - name, price, discount, type (physical/digital), description
-     * - 
+     * -
      */
     public function createProduct(Request $request, Store $shortname){
         //returns the product id
@@ -46,14 +46,14 @@ class ProductController extends Controller
     /**
      * 1) Upload the products to cloudinary
      * 2) Return file names to the frontend to use for displaying the images
-     * 3) The file names are added to an hidden input as 
+     * 3) The file names are added to an hidden input as
      *  `media_library` and submitted once save is clicked
      */
     public function uploadMedia($request){
         $request->validate([
             'productId' => 'required|integer'
         ]);
-        
+
         $files = $request->file('files');
 
         $responses = array();
@@ -61,7 +61,7 @@ class ProductController extends Controller
         if(is_array($files)) {
             foreach($files as $file){
                 $responses[] = $file->storeOnCloudinary('commerce')->getSecurePath();
-            }            
+            }
         }else {
             $responses = $files->storeOnCloudinary('commerce')->getSecurePath();
         }
@@ -100,7 +100,7 @@ class ProductController extends Controller
         ]);
 
         $product = $this->store->addProducts($request, $shortname, $request->productId);
-        
+
         return $product;
     }
 
@@ -133,7 +133,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Get all products
+     * Get all products GET /products?filter[status]=active&
      */
     public function index(Store $shortname){
         $response = QueryBuilder::for($shortname->products())

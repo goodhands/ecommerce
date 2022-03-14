@@ -20,7 +20,7 @@ class RegisteredUserController extends Controller
 
     public function __construct(StoreRepository $store)
     {
-        $this->storeModel = $store;    
+        $this->storeModel = $store;
     }
 
     /**
@@ -49,6 +49,9 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Create a token to be used for auth
+        $token = $user->createToken('auth_token');
+
         //attach the user to the store as the owner
         $store->users()->save($user, ['role' => 'owner']);
 
@@ -59,11 +62,13 @@ class RegisteredUserController extends Controller
             "message" => "Registration successful",
             "user" => $user,
             "storeName" => $store->shortname,
-            "storeId" => $store->id
+            "storeId" => $store->id,
+            "token" => $token->plainTextToken
         ], 201);
     }
 
-    public function stepTwo(Request $request){
+    public function stepTwo(Request $request)
+    {
         $request->validate([
             'size' => 'required|string',
             'category' => 'required|string',
@@ -76,15 +81,21 @@ class RegisteredUserController extends Controller
 
         //emit event for newly created store
         event(new StoreCreated($store));
-        
+
         return $store;
     }
 
-    public function createStore(Request $request){
+    public function createStore(Request $request)
+    {
         //step of the registration
         $step = $request->query('step');
-        
-        if($step == 1) return $this->stepOne($request);
-        if($step == 2) return $this->stepTwo($request);
+
+        if ($step == 1) {
+            return $this->stepOne($request);
+        }
+
+        if ($step == 2) {
+            return $this->stepTwo($request);
+        }
     }
 }

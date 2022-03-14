@@ -37,7 +37,8 @@ class StoreController extends Controller
         return $store;
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         //we need id to update the store, of course
         $request->validate([
             'storeId' => 'required|integer'
@@ -49,8 +50,9 @@ class StoreController extends Controller
         return new StoreResource($store);
     }
 
-    public function show(Store $shortname){
+    public function show(Store $shortname)
+    {
         return new StoreResource($shortname);
     }
-    
+
 }

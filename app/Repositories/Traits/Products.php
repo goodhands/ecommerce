@@ -28,7 +28,7 @@ trait Products{
         }
 
         //if variants exists, work on 'em
-        if($data->has('variation')){
+        if($data->has('variation') && !empty($data->variation['variations'])){
             $this->createVariants($data->only('variation'), $product);
         }
 

@@ -17,10 +17,6 @@ class UpdateVariantTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->json('values'); //MD | SM | XL | LG
         });
-
-        Schema::table('product_variant', function (Blueprint $table) {
-            $table->dropColumn('product_id');
-        });
     }
 
     /**

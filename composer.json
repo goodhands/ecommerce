@@ -25,7 +25,7 @@
             "url": "https://github.com/goodhands/laravel-paystack"
         },
         {
-            "type": "composer", 
+            "type": "composer",
             "url": "https://packagist.org"
         },
         { "packagist": false }

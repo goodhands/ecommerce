@@ -30,7 +30,7 @@ class StorePolicy
      */
     public function view(User $user, Store $store)
     {
-        //
+        return $user->id !== $store->owner->id;
     }
 
     /**
