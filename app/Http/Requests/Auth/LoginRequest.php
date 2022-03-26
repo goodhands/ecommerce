@@ -49,7 +49,7 @@ class LoginRequest extends FormRequest
 
         $store = Store::where('shortname', $this->store)->first();
 
-        if(!$store){
+        if (!$store) {
             throw ValidationException::withMessages([
                 'store' => "Sorry! We couldn't find the store with that name",
             ]);
@@ -57,7 +57,7 @@ class LoginRequest extends FormRequest
 
         $user = $store->users()->where('email', $this->email);
 
-        if(!$user){
+        if (!$user) {
             throw ValidationException::withMessages([
                 'store' => "Your credentials do not match this store's admins",
             ]);
@@ -65,7 +65,7 @@ class LoginRequest extends FormRequest
 
         if (! Auth::attempt($this->only('email', 'password'), $this->filled('remember'))) {
             RateLimiter::hit($this->throttleKey());
-            
+
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);

@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 class User extends Authenticatable
 {
-    use HasFactory, HasApiTokens, Notifiable;
+    use HasFactory;
+    use HasApiTokens;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -45,7 +49,14 @@ class User extends Authenticatable
     public function store(): BelongsToMany
     {
         return $this->belongsToMany(Store::class)->withPivot(
-            'firstname', 'lastname', 'role'
+            'firstname',
+            'lastname',
+            'role'
         );
+    }
+
+    public function getStore($shortname)
+    {
+        return $this->store()->where('shortname', $shortname)->first();
     }
 }

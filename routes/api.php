@@ -25,6 +25,8 @@ Route::get('/', function (Request $request) {
     ];
 });
 
+require __DIR__.'/auth.php';
+
 /**
  * Subscription endpoints
  */

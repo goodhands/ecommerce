@@ -49,8 +49,9 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Create a token to be used for auth
-        $token = $user->createToken('auth_token');
+        // Create a token to be used for auth.
+        // Token abilities may be granted based on the user's plan
+        $token = $user->createToken('auth_token', ['']);
 
         //attach the user to the store as the owner
         $store->users()->save($user, ['role' => 'owner']);

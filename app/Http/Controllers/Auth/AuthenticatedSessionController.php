@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -29,15 +32,13 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
             $request->authenticate();
+            $user = $request->user();
+            $store = $request->store;
+            $response = new UserResource($user);
 
-            $request->session()->regenerate();
-
-            return response()->json(
-                [
-                    "user" => auth()->user(), 
-                    "store" => auth()->user()->store()->where('shortname', $request->store)->first()
-                ]); 
-            
+            return response()
+                            ->json(['status' => 'success', 'store' => $store, 'data' => $response])
+                            ->setStatusCode(200);
     }
 
     /**
@@ -48,11 +49,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-        Auth::logout();
+        // Revoke all tokens...
+        $request->user()->tokens()->delete();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+        // Revoke the token that was used to authenticate the current request...
+        $request->user()->currentAccessToken()->delete();
 
         return true;
     }
