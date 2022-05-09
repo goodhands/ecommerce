@@ -47,20 +47,29 @@ class Product extends Model
         return $this->belongsTo(Collections::class);
     }
 
-    public function scopeDateBetween(Builder $query, $start, $end){
+    public function scopeDateBetween(Builder $query, $start, $end)
+    {
         return $query->whereBetween('created_at', [Carbon::parse($start), Carbon::parse($end)]);
     }
 
-    public function inventory(){
+    public function scopeCollection(Builder $query, $collection)
+    {
+        return $query->whereCollectionId($collection);
+    }
+
+    public function inventory()
+    {
         return $this->hasMany(Inventory::class);
     }
 
-    public function variant(){
+    public function variant()
+    {
         return $this->hasMany(Variant::class);
     }
 
     // Each variant has its own stock and other details
-    public function variantInventory(){
+    public function variantInventory()
+    {
         return $this->hasMany(VariantInventory::class);
     }
 }

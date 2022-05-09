@@ -26,16 +26,18 @@ class ProductController extends Controller
      * - name, price, discount, type (physical/digital), description
      * -
      */
-    public function createProduct(Request $request, Store $shortname){
+    public function createProduct(Request $request, Store $shortname)
+    {
         //returns the product id
-        if($request->query('step') == 'init') return $this->initialize();
+        if ($request->has('step') && $request->step == 'init') return $this->initialize();
         //emits event to the frontend and updates the product media
-        if($request->query('step') == 'upload') return $this->uploadMedia($request);
+        // if($request->query('step') == 'upload') return $this->uploadMedia($request);
         //saves all details and attaches to store
-        if($request->query('step') == 'save') return $this->store($request, $shortname);
+        if ($request->has('step') && $request->query('step') == 'save') return $this->store($request, $shortname);
     }
 
-    public function initialize(){
+    public function initialize()
+    {
         $product = Product::create([
             'status' => 'draft'
         ]);
@@ -49,28 +51,13 @@ class ProductController extends Controller
      * 3) The file names are added to an hidden input as
      *  `media_library` and submitted once save is clicked
      */
-    public function uploadMedia($request){
-        $request->validate([
-            'productId' => 'required|integer'
-        ]);
-
-        $files = $request->file('files');
-
-        $responses = array();
-
-        if(is_array($files)) {
-            foreach($files as $file){
-                $responses[] = $file->storeOnCloudinary('commerce')->getSecurePath();
-            }
-        }else {
-            $responses = $files->storeOnCloudinary('commerce')->getSecurePath();
-        }
-
-
-        return $responses;
+    public function uploadMedia($request)
+    {
+        return $this->store->uploadMedia($request);
     }
 
-    public function updateProductMedia(Request $request, Store $shortname, $id){
+    public function updateProductMedia(Request $request, Store $shortname, $id)
+    {
         $files = $this->uploadMedia($request);
 
         $data = [
@@ -82,7 +69,8 @@ class ProductController extends Controller
         return $files;
     }
 
-    public function store($request, $shortname){
+    public function store($request, $shortname)
+    {
         $request->validate([
             "name" => "required|string|max:200",
             "productId" => "required|integer",
@@ -91,11 +79,12 @@ class ProductController extends Controller
             "stock" => "integer",
             "discount" => "integer",
             "collection_id" => "integer",
+            "media_library" => "array"
         ]);
 
         //automatically generate shortname based on name and random string
         $request->request->add([
-            'shortname' => Str::slug($request->name) .'-'. rand(0001, 9999),
+            'shortname' => Str::slug($request->name) . '-' . rand(0001, 9999),
             'status' => 'published'
         ]);
 
@@ -128,19 +117,22 @@ class ProductController extends Controller
      * Get product by ID for the admin to interact with id/{id}
      * We are not incrementing ID here, cos 'a-d-m-i-n'
      */
-    public function getProductById(Request $request, Store $shortname, Product $id){
+    public function getProductById(Request $request, Store $shortname, Product $id)
+    {
         return $id;
     }
 
     /**
      * Get all products GET /products?filter[status]=active&
      */
-    public function index(Store $shortname){
+    public function index(Store $shortname)
+    {
         $response = QueryBuilder::for($shortname->products())
                     ->allowedFilters(
                         AllowedFilter::scope('date_between'),
                         AllowedFilter::exact('status'),
-                        AllowedFilter::exact('id')
+                        AllowedFilter::exact('id'),
+                        AllowedFilter::scope('collection'),
                     )
                     ->allowedFields(['id', 'name', 'views'])
                     ->allowedSorts(['views', 'created_at'])

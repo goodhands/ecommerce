@@ -13,15 +13,17 @@ use App\Repositories\Traits\Delivery as HasDelivery;
 use App\Repositories\Traits\Orders as HasOrders;
 use App\Repositories\Traits\Payments as HasPayments;
 use App\Repositories\Traits\Secrets as HasSecrets;
+use App\Repositories\Traits\Media as HasMedia;
 use Exception;
 
-class StoreRepository{
+class StoreRepository
+{
 
-    use HasProducts, HasCollections, HasCustomers, HasSecrets, HasPayments, HasOrders, HasDelivery;
+    use HasProducts, HasCollections, HasCustomers, HasSecrets, HasPayments, HasOrders, HasDelivery, HasMedia;
 
     public function __construct(Store $store)
     {
-        $this->storeModel = $store;    
+        $this->storeModel = $store;
     }
 
     public function initialize(string $storeName){
@@ -40,7 +42,7 @@ class StoreRepository{
      *  "name" => "New name",
      *  "size" => "New size"
      * ]
-     * 
+     *
      * @throws Exception
      * @return App\Models\Store
      */
@@ -57,7 +59,7 @@ class StoreRepository{
             ->update($data);
 
         if(1 == $didUpdate){
-            //we want to return the newly updated details to 
+            //we want to return the newly updated details to
             //the user and not the old details
             return Store::find($storeId);
         }else{
@@ -67,14 +69,14 @@ class StoreRepository{
 
     public function createStore(array $data){
         $store = Store::create($data);
-        
+
         event(new StoreCreated($data));
 
         return new StoreResource($store);
     }
 
     /**
-     * Checks if user has access to interact 
+     * Checks if user has access to interact
      * with this store
      */
     public function userHasAccess($store){

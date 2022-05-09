@@ -1,16 +1,20 @@
 <?php
 
 namespace App\Repositories\Traits;
+
 use App\Models\Store\Product;
 use App\Models\Store\Products\Variant;
 use App\Models\Store\Products\VariantInventory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 trait Products{
     /**
      * Add products to a store
      */
-    public function addProducts(Request $data, $store, $productId = null){
-        $productHelper = new Product;
+    public function addProducts(Request $data, $store, $productId = null)
+    {
+        $productHelper = new Product();
 
         //require auth to create a product
         $this->userHasAccess($store);
@@ -19,16 +23,16 @@ trait Products{
         $productData = $data->except('productId', 'step', 'variation');
 
         //create product
-        if(!$productId){
+        if (!$productId) {
             $product = $productHelper::create($productData);
-        }else{
+        } else {
             $didUpdate = $productHelper::whereId($productId)
                             ->update($productData);
             if($didUpdate) $product = $productHelper::find($productId);
         }
 
         //if variants exists, work on 'em
-        if($data->has('variation') && !empty($data->variation['variations'])){
+        if ($data->has('variation') && !empty($data->variation['variations'])) {
             $this->createVariants($data->only('variation'), $product);
         }
 
@@ -65,14 +69,17 @@ trait Products{
             $exists = Variant::where($verifyVariant)->exists();
 
             if($exists){
+                Log::debug(print_r($variantType, true) . " variant exists so we will update it ");
                 //if it already, exists update the values
                 $variant = Variant::where($verifyVariant)->update([
-                    'values' => $variantType['tags'],
+                    'values' => $variantType['values'],
+                    'type' => $variantType['type'],
                 ]);
             }else{
+                Log::debug(print_r($variantType, true) . " variant does not exist so we will create it ");
                 $variant = Variant::create([
                     'type' => $variantType['type'],
-                    'values' => $variantType['tags'],
+                    'values' => $variantType['values'],
                     'product_id' => $product->id
                 ]);
             }
@@ -81,25 +88,25 @@ trait Products{
         // add inventory, Inventory is independent of variants
         // because they contain enough information needed about
         // the variant(s) they are referencing
-        foreach($variantInventory as $vInventory){
+        foreach ($variantInventory as $vInventory) {
             //check if variant-inventory exists before adding
-            $verifyInventory = [
-                'variant' => $vInventory['variant'],
-                'product_id' => $product->id,
-            ];
+            $inventoryExists = $vInventory['id'] ?? false;
 
-            $inventoryExists = VariantInventory::where($verifyInventory)->exists();
+            if ($inventoryExists) {
+                Log::debug(print_r($vInventory, true) . " inventory exist so we will update it ");
 
-            if($inventoryExists){
                 //if it already exists, the data we wanna update is
                 //probably the stock, price or media
-                VariantInventory::where($verifyInventory)
+                VariantInventory::where($vInventory)
                                             ->update([
                                                 'stock' => $vInventory['stock'],
                                                 'price' => $vInventory['price'],
-                                                'media' => '[]'
+                                                'media' => '[]',
+                                                'variant' => $vInventory['variant'],
                                             ]);
             }else{
+                Log::debug(print_r($vInventory, true) . " inventory does not exist so we will create it ");
+
                 //now add variant inventory
                 VariantInventory::create([
                     'variant' => $vInventory['variant'],

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\StoreRepository;
 use App\Models\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PaymentMethodsController extends Controller
@@ -22,7 +23,8 @@ class PaymentMethodsController extends Controller
     /**
      * Activate a new provider for a store
      */
-    public function store(Store $store, Request $request){
+    public function store(Store $store, Request $request)
+    {
         $request->validate([
             'public_key' => 'string|required_if:type,3rd party',
             'secret_key' => 'string|required_if:type,3rd party',
@@ -30,10 +32,10 @@ class PaymentMethodsController extends Controller
             'channels' => 'array',
             'active' => 'bool',
             'notes' => 'string',
-            //this will be submitted with the form. the value is 
-            //gotten from the config settings for the provider. 
+            //this will be submitted with the form. the value is
+            //gotten from the config settings for the provider.
             //although we are not saving it in the db, it's useful
-            //for determinig how we should handle the request
+            //for determining how we should handle the request
             'type' => 'string|required',
             'id' => 'string|required', //the internal id of the provider [name-pay => paystack-pay]
         ]);
@@ -46,23 +48,31 @@ class PaymentMethodsController extends Controller
     /**
      * Get all payment methods belonging to the store
      */
-    public function index(Store $store){
+    public function index(Store $store)
+    {
         return $store->payment;
     }
 
     /**
      * Get paystack's options
      */
-    public function paystack(){
+    public function paystack()
+    {
         return $this->providers['paystack'];
     }
 
     /**
-     * Return all providers supported so 
+     * Return all providers supported so
      * they can choose which to setup
      */
-    public function providers(){
+    public function providers()
+    {
         return $this->providers;
     }
 
+    public function intent(Request $request)
+    {
+        $user = User::first();
+        return $user->createSetupIntent();
+    }
 }

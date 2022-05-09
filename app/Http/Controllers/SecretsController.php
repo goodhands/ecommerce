@@ -15,7 +15,8 @@ class SecretsController extends Controller
         $this->store = $store;
     }
 
-    public function store(Request $request, Store $store){
+    public function store(Request $request, Store $store)
+    {
 
         $request->validate([
             'provider_id' => 'required|integer',
@@ -24,12 +25,12 @@ class SecretsController extends Controller
             'api_key' => 'string',
             'secret_key' => 'string'
         ]);
-        
+
         $secret = $this->store->addSecret($request->all(), $store);
 
-        if($secret instanceof Secrets){
+        if ($secret instanceof Secrets) {
             return true;
-        }else{
+        } else {
             throw new Exception("Failed to create new secret");
         }
     }

@@ -14,27 +14,33 @@ Route::post('/sign-up', [RegisteredUserController::class, 'createStore'])
 
 
 // Endpoints that do not require auth
-Route::get('store/{shortname}', [StoreController::class, 'show']);
+Route::group(['prefix' => 'store'], function () {
+
+    Route::get('/{shortname}', [StoreController::class, 'show']);
+
+    Route::get('/{shortname}/collections', [CollectionController::class, 'index']);
+    Route::get('/{shortname}/collections/{collection}', [CollectionController::class, 'show']);
+
+    Route::get('/{shortname}/products', [ProductController::class, 'index']);
+    Route::get('/{shortname}/products/{slug}', [ProductController::class, 'getProductByShortname']);
+});
 
 //Endpoints that require auth
-//TODO Add a middleware to ensure user is subscribed to a plan 
+//TODO Add a middleware to ensure user is subscribed to a plan
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'store'], function () {
     Route::post('/', [StoreController::class, 'store']);
     Route::put('/', [StoreController::class, 'update']);
 
     // interact with the products
     Route::get('/{shortname}/products/id/{id}', [ProductController::class, 'getProductById']);
-    Route::get('/{shortname}/products/{slug}', [ProductController::class, 'getProductByShortname']);
-    Route::get('/{shortname}/products', [ProductController::class, 'index']);
     Route::post('/{shortname}/products/', [ProductController::class, 'createProduct']);
 
-    // update product information
-    Route::post('{shortname}/products/{id}/media', [ProductController::class, 'updateProductMedia']);
+    // update product media
+    Route::post('/{shortname}/products/{id}/media', [ProductController::class, 'updateProductMedia']);
+    Route::post('/{shortname}/collections/{id}/media', [CollectionController::class, 'updateCollectionMedia']);
 
     //collections
-    Route::post('/{shortname}/collections', [CollectionController::class, 'store']);
-    Route::get('/{shortname}/collections', [CollectionController::class, 'index']);
-    Route::get('/{shortname}/collections/{collection}', [CollectionController::class, 'show']);
+    Route::post('/{shortname}/collections{id?}', [CollectionController::class, 'store']);
     Route::get('/{shortname}/collections/search/{keyword}', [CollectionController::class, 'search']);
     Route::post('/{shortname}/collections/products', [CollectionController::class, 'addProduct']);
 });

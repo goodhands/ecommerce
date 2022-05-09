@@ -9,12 +9,14 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
     use HasFactory;
     use HasApiTokens;
     use Notifiable;
+    use Billable;
 
     /**
      * The attributes that are mass assignable.
