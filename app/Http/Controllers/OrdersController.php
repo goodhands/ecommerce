@@ -17,7 +17,7 @@ class OrdersController extends Controller
     private $paymentService;
 
     public function __construct(StoreRepository $store, Carbon $carbon)
-    {    
+    {
         $this->storeModel = $store;
         $this->carbon = $carbon;
     }
@@ -38,7 +38,7 @@ class OrdersController extends Controller
     /**
      * This is the final step in creating an
      * order. This returns a url (by calling $this->pay())
-     * that the user 
+     * that the user
      * will be redirected to for payment based on
      * the provider they selected.
      */
@@ -72,7 +72,7 @@ class OrdersController extends Controller
         $delivery = $this->storeModel->resolveDeliveryProvider($store, $request->delivery_method);
 
         $this->storeModel->calculateTotal($order, $delivery);
-        
+
         //returns some values based on the payment provider selected.
         //3rd parties return a url to checkout
         //manual returns payment instructions
@@ -103,7 +103,7 @@ class OrdersController extends Controller
                             ->orWhere('phone', $request->phone)
                             ->where('store_id', $store->id)
                             ->first();
-        
+
         if(!$customer){
             return $this->storeModel->addCustomers($request->except('step'), $store);
         }else{
@@ -136,15 +136,20 @@ class OrdersController extends Controller
     /**
      * Show a single order
      */
-    public function show(Store $store, Order $order){
-        return $order;
+    public function show(Store $store, Order $order)
+    {
+        $resource = $order->with(['customer', 'products', 'delivery', 'payment'])->first();
+        \Log::debug("Order details " . print_r($resource, true));
+
+        return $resource;
     }
 
     /**
      * Verify order payment made using a 3rd party
      */
-    public function verify(Request $request){
-        //find store by shortname and update payment status 
+    public function verify(Request $request)
+    {
+        //find store by shortname and update payment status
         //if valid ref was found
         $store = $this->storeModel->findStore($request->store);
         $order = $this->storeModel->findOrder($request->order);
@@ -153,9 +158,9 @@ class OrdersController extends Controller
         $order->payment_status = "Paid";
 
         $verifiedPayment = json_decode(json_encode($this->storeModel->verify($store, $request)));
-        
+
         //update transaction reference
-        $order->reference = $verifiedPayment->data->reference; 
+        $order->reference = $verifiedPayment->data->reference;
 
         $order->save();
 

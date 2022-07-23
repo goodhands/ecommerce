@@ -17,7 +17,7 @@ class Secrets extends Model
         'provider_id', 'provider_type', 'api_key', 'public_key', 'secret_key'
     ];
 
-    public function store() : BelongsTo
+    public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);
     }

@@ -10,6 +10,7 @@ class DeliveryMethodsController extends Controller
 {
     public function __construct(StoreRepository $storeModel)
     {
+        $this->providers = config('providers.delivery');
         $this->storeModel = $storeModel;
     }
 
@@ -18,7 +19,13 @@ class DeliveryMethodsController extends Controller
         return $this->storeModel->loadMethodFromConfigFile();
     }
 
-    public function store(Request $request, Store $store){
+    public function providers()
+    {
+        return $this->providers;
+    }
+
+    public function store(Request $request, Store $store)
+    {
         $request->validate([
             'label' => 'string|required',
             'flat_rate' => 'integer',
@@ -29,7 +36,8 @@ class DeliveryMethodsController extends Controller
         return $this->storeModel->addDeliveryMethods($request->all(), $store);
     }
 
-    public function index(Store $store){
+    public function index(Store $store)
+    {
         return $store->delivery;
     }
 }

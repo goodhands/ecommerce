@@ -26,7 +26,8 @@ class StoreRepository
         $this->storeModel = $store;
     }
 
-    public function initialize(string $storeName){
+    public function initialize(string $storeName)
+    {
         $store = Store::create([
             'shortname' => $storeName
         ]);
@@ -40,34 +41,36 @@ class StoreRepository
     /**
      * $data = [
      *  "name" => "New name",
-     *  "size" => "New size"
+     *  "size" => "0-5"
      * ]
      *
      * @throws Exception
      * @return App\Models\Store
      */
-    public function updateStore(array $data, int $storeId, bool $requiresAuth){
+    public function updateStore(array $data, int $storeId, bool $requiresAuth)
+    {
         //get the store
         $store = Store::find($storeId);
 
         //verify user has the right permissions
-        if($requiresAuth){
+        if ($requiresAuth) {
             $this->userHasAccess($store);
         }
 
         $didUpdate = Store::whereId($storeId)
             ->update($data);
 
-        if(1 == $didUpdate){
+        if (1 == $didUpdate) {
             //we want to return the newly updated details to
             //the user and not the old details
             return Store::find($storeId);
-        }else{
+        } else {
             throw new Exception("Failed to update store" . $didUpdate);
         }
     }
 
-    public function createStore(array $data){
+    public function createStore(array $data)
+    {
         $store = Store::create($data);
 
         event(new StoreCreated($data));
@@ -79,10 +82,11 @@ class StoreRepository
      * Checks if user has access to interact
      * with this store
      */
-    public function userHasAccess($store){
-        if(!auth()->user()) throw new Exception("User is not authenticated");
+    public function userHasAccess($store)
+    {
+        if (!auth()->user()) throw new Exception("User is not authenticated");
 
-        if(auth()->user()->cannot('update', $store)){
+        if (auth()->user()->cannot('update', $store)) {
             throw new Exception("You do not have the right permissions for that action");
         }
     }

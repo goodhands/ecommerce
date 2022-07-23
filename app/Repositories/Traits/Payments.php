@@ -6,39 +6,47 @@ use App\Models\Store\Payments\Methods;
 use Illuminate\Support\Str;
 use Exception;
 
-trait Payments{
+trait Payments
+{
 
     /**
      * We need to create a job that will handle this.
-     * 
-     * The job will be triggered by some endpoint that 
+     *
+     * The job will be triggered by some endpoint that
      * will be called whenever a new config has been added
+     *
+     * We don't need to store channels and other settings in
+     * the db.
+     *
+     * This method may be triggered as part of our `deploy`
+     * command
      */
-    public function loadPaymentProvidersFromConfig(){
+    public function loadPaymentProvidersFromConfig()
+    {
         $providers = config('providers.payment');
 
-        foreach($providers as $provider){
+        foreach ($providers as $provider) {
             $data['name'] = $provider['name'];
             $data['description'] = $provider['description'];
             $data['label'] = ucfirst(Str::before($provider['id'], '-'));
             $data['type'] = $provider['type'];
 
             //add 3rd party constraints
-            if($provider['type'] == "3rd party"){
+            if ($provider['type'] == "3rd party") {
 
-                if(!$provider['website'] || !$provider['rates']){
+                if (!$provider['website'] || !$provider['rates']) {
                     throw new Exception("To register a 3rd party provider, you must provide the website and rate of the provider. In " . $provider['name']);
                 }
 
                 $data['website'] = $provider['website'];
                 $data['rates'] = $provider['rates'];
-            }else{
+            } else {
                 $data['website'] = null;
                 $data['rates'] = null;
             }
 
             //since label is unique, we will add a constraint with it
-            if(Methods::where('label', $data['label'])->exists()){
+            if (Methods::where('label', $data['label'])->exists()) {
                 return false;
             }
 
@@ -48,15 +56,26 @@ trait Payments{
         return $result;
     }
 
-    public function addPaymentMethod($data, $store){
+    /**
+     * We will load the payment options shown to the frontend
+     * from the config file and when the user configures one
+     * of them, we will parse the `id` (aka label) to find the
+     * method in the database. We must always synchronize the
+     * config options with the database with
+     * `loadPaymentProvidersFromConfig` above.
+     */
+    public function addPaymentMethod($data, $store)
+    {
 
         //fetch the method from db
-        $method = Methods::where('label', Str::before($data->id, '-'))->first();
+        $method = Methods::where('label', Str::ucfirst(Str::before($data->id, '-')))->first();
 
-        if(!$method) throw new Exception("An error occured while handling this request");
+        if (!$method) {
+            throw new Exception("An error occurred while handling this request {$method}");
+        }
 
         //check if payment provider has already been added
-        if($store->payment->contains('id', $method->id)){
+        if ($store->payment->contains('id', $method->id)) {
             throw new Exception("That payment provider has already been setup for this store.");
         }
 
@@ -64,44 +83,47 @@ trait Payments{
         $store->payment()->save($method, [
             'notes' => $data->notes,
             'channels' => $data->channels
-        ]);     
-        
+        ]);
+
         //if type is 3rd party and secrets don't exist
-        if($data->type == "3rd party"){
-            if(!$data->hasAny(['public_key', 'secret_key', 'api_key'])){
+        if ($data->type === "3rd party") {
+            if (!$data->hasAny(['public_key', 'secret_key', 'api_key'])) {
                 throw new Exception("A secret key or api must be passed along for payment methods using a 3rd party");
             }
         }
-        
+
         //only need secrets for third parties
-        if($data->type == "3rd party"){
+        if ($data->type == "3rd party") {
             $secrets = [
                 'provider_type' => 'payment',
                 'provider_id' => $method->id
             ];
-    
+
             $secrets['public_key'] = ($data->has('public_key')) ? $data->public_key : '';
             $secrets['secret_key'] = ($data->has('secret_key')) ? $data->secret_key : '';
             $secrets['api_key'] = ($data->has('api_key')) ? $data->api_key : '';
-    
+
             $this->addSecret($secrets, $store);
         }
 
         return $method;
     }
 
-    public function acceptPayment($data, $store, $order){
+    public function acceptPayment($data, $store, $order)
+    {
         //gives us the label of the payment provider
         $provider = $store->payment->where('id', $data->payment_method)->first()->label;
 
         return $this->{"payWith".$provider}($data, $store, $order);
     }
 
-    public function payWithCod($data, $store, $order){
+    public function payWithCod($data, $store, $order)
+    {
         return $store->payment->where('id', $data->payment_method)->first()->pivot->notes;
     }
 
-    public function payWithPaystack($data, $store, $order){
+    public function payWithPaystack($data, $store, $order)
+    {
 
         $key = $store->secrets->where('provider_id', $data->payment_method)->first()->secret_key;
 
@@ -125,22 +147,25 @@ trait Payments{
                         ]
                     ])
                 ]);
-        
+
         return $res;
     }
 
-    public function payWithFlutterwave($data, $store, $order){
+    public function payWithFlutterwave($data, $store, $order)
+    {
         return "pay with flutterwave";
     }
 
-    public function verify($store, $request){
+    public function verify($store, $request)
+    {
         //call the right verifier
         $provider = $store->payment->where('id', $request->provider)->pluck('label')->first();
 
         return $this->{"verify".$provider}($store, $request);
     }
 
-    public function verifyPaystack($store, $request){
+    public function verifyPaystack($store, $request)
+    {
         $key = $store->secrets->where('provider_id', $request->provider)->first()->secret_key;
 
         return paystack()->prepare($key)->getPaymentData();

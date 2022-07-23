@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * This model will be referred to externally 
+ * This model will be referred to externally
  * as StoreUser
  */
 class User extends Model
