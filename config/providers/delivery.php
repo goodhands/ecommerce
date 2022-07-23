@@ -3,22 +3,20 @@
     return [
         'standard' => [
             'name' => 'Standard Delivery',
-            'description' => 'Standard delivery, we will ship the order to your location. 
-                                Price range differs based on your location',
+            'description' => 'Ship orders based to customers, set prices based on their location/region',
             'label' => 'standard-delivery',
-            'type' => 'manual',
+            'type' => 'regional',
             'cost' => '',
-        ],
-        'local' => [
-            'name' => 'Local Delivery',
-            'description' => 'Shipping description here',
-            'label' => 'local-delivery',
-            'type' => 'manual',
+            'settings' => [
+                'require' => [
+                    ['label' => 'API Key', 'key' => 'api_key'],
+                ]
+            ]
         ],
         'gokada' => [
             'name' => 'Gokada Delivery',
             'label' => 'gokada-delivery',
-            'description' => 'Shipping description here',
+            'description' => 'Let Gokada handle your delivery',
             'website' => 'https://gokada.ng/',
             'api' => 'https://api.gokada.ng/',
             'type' => '3rd party',

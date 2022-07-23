@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+
 class Product extends Model
 {
     use HasFactory;
@@ -32,7 +33,7 @@ class Product extends Model
         'media_library' => 'array'
     ];
 
-    public function store() : BelongsTo
+    public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);
     }

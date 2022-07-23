@@ -49,7 +49,7 @@ class CollectionController extends Controller
         }
 
         //add auto generated details
-        if(!$request->has('id')) {
+        if (!$request->has('id')) {
             $request->request->add([
                 'createdBy' => auth()->user()->id,
                 'shortname' => Str::slug($request->name . '-' . rand(0, 999)),
@@ -127,7 +127,7 @@ class CollectionController extends Controller
 
     public function show(Store $shortname, Collections $collection)
     {
-        return $collection->products;
+        return $collection;
     }
 
     public function products(Store $shortname, Collections $collection)

@@ -21,7 +21,8 @@ class Variant extends Model
     ];
 
     //Variants belong to a product
-    public function product(){
+    public function product()
+    {
         return $this->belongsTo(Product::class);
     }
 }

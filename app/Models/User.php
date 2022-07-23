@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Cashier\Billable;
 
+use function Illuminate\Events\queueable;
+
 class User extends Authenticatable
 {
     use HasFactory;
@@ -46,6 +48,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'billing_address'   => 'array'
     ];
 
     public function store(): BelongsToMany
@@ -60,5 +63,19 @@ class User extends Authenticatable
     public function getStore($shortname)
     {
         return $this->store()->where('shortname', $shortname)->first();
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::updated(queueable(function ($customer) {
+            if ($customer->hasStripeId()) {
+                $customer->syncStripeCustomerDetails();
+            }
+        }));
     }
 }
