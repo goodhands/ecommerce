@@ -102,7 +102,7 @@ class ProductController extends Controller
         //returns an instance of App\Models\Store\Product so we can interact w it
         $product = $shortname->products->where('shortname', $slug)->first();
 
-        if(!$product){
+        if (!$product) {
             throw new Exception("The requested product could not be found");
         }
 
@@ -115,7 +115,7 @@ class ProductController extends Controller
 
     /**
      * Get product by ID for the admin to interact with id/{id}
-     * We are not incrementing ID here, cos 'a-d-m-i-n'
+     * We are not incrementing views here, cos 'a-d-m-i-n'
      */
     public function getProductById(Request $request, Store $shortname, Product $id)
     {
@@ -123,7 +123,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Get all products GET /products?filter[status]=active&
+     * Get all products GET /products?filter[status]=active&...
      */
     public function index(Store $shortname)
     {
