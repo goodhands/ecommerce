@@ -28,6 +28,7 @@ class StoreController extends Controller
             'category' => 'required|string',
             'industry' => 'required|string',
             'shortname' => 'required|string|max:100|alpha_dash|unique:stores,shortname',
+            'name' => 'required|string',
         ]);
 
         $store = $this->storeModel->createStore($request->all());
