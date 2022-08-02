@@ -229,4 +229,6 @@ return [
 
     ],
 
+    'faker_locale' => 'en_NG'
+
 ];

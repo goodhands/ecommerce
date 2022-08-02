@@ -77,7 +77,7 @@ class RegisteredUserController extends Controller
     public function stepTwo(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'sometimes|string',
             'size' => 'required|string',
             'category' => 'required|string',
             'industry' => 'required|string',

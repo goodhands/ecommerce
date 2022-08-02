@@ -8,6 +8,7 @@ use App\Models\Store\Customer;
 use App\Models\Store\Order;
 use App\Repositories\StoreRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
@@ -141,9 +142,9 @@ class OrdersController extends Controller
      */
     public function show(Store $store, Order $order)
     {
-        $resource = $order->with(['customer', 'products', 'delivery', 'payment'])->first();
+        $order->load(['customer', 'products', 'delivery', 'payment']);
 
-        return $resource;
+        return $order;
     }
 
     /**

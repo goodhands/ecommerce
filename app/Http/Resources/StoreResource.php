@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class StoreResource extends JsonResource
 {
@@ -14,17 +15,17 @@ class StoreResource extends JsonResource
      */
     public function toArray($request)
     {
-
         return [
-            "store" => [
-                "id" => $this->id,
-                "name" => $this->name,
-                "shortname" => $this->shortname,
-                "category" => $this->category,
-                "size" => $this->size,
-                "industry" => $this->industry,
-                "administrators" => new UserResource($this->users)
-            ]
+            "id" => $this->id,
+            "name" => $this->name,
+            "shortname" => $this->shortname,
+            "category" => $this->category,
+            "size" => $this->size,
+            "industry" => $this->industry,
+            "url" => $this->url,
+            $this->mergeWhen($request->has('administrators'), [
+                "administrators" => new StoreAdminCollection($this->users)
+            ]),
         ];
     }
 }
