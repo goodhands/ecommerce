@@ -20,7 +20,7 @@ class TestGA extends Command
      */
     protected $signature = 'test:ga';
 
-    private string $ACCOUNT_ID = env('GA_ACCOUNT_ID');
+    private static ?string $ACCOUNT_ID = null;
 
     /**
      * The console command description.
@@ -37,6 +37,7 @@ class TestGA extends Command
     public function __construct()
     {
         parent::__construct();
+        self::$ACCOUNT_ID = env('GA_ACCOUNT_ID');
     }
 
     /**
