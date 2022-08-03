@@ -20,7 +20,7 @@ class TestGA extends Command
      */
     protected $signature = 'test:ga';
 
-    private const ACCOUNT_ID = '236370720';
+    private string $ACCOUNT_ID = env('GA_ACCOUNT_ID');
 
     /**
      * The console command description.
@@ -98,7 +98,7 @@ class TestGA extends Command
             $property->setIndustryVertical('BEAUTY_AND_FITNESS');
             // We can't create accounts programmatically so we are using a constant here
             // New accounts can be created from the dashboard and replace this
-            $webProperty = $analytics->management_webproperties->insert(self::ACCOUNT_ID, $property);
+            $webProperty = $analytics->management_webproperties->insert(self::$ACCOUNT_ID, $property);
 
             // Create view
             $propertyID = $webProperty->getId();
@@ -130,7 +130,7 @@ class TestGA extends Command
         $profile->setType('WEB');
 
         try {
-            return $analytics->management_profiles->insert(self::ACCOUNT_ID, $propertyTrackingID, $profile);
+            return $analytics->management_profiles->insert(self::$ACCOUNT_ID, $propertyTrackingID, $profile);
         } catch (apiServiceException $e) {
             print 'There was an Analytics API service error with creating the view '
             . $e->getCode() . ':' . $e->getMessage();
