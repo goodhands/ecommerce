@@ -9,7 +9,6 @@ use App\Repositories\StoreRepository;
 use App\Models\Store;
 use App\Models\Store\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class StoreController extends Controller
 {
@@ -29,12 +28,14 @@ class StoreController extends Controller
             'category' => 'required|string',
             'industry' => 'required|string',
             'shortname' => 'required|string|max:100|alpha_dash|unique:stores,shortname',
-            'name' => 'required|string',
         ]);
 
         $store = $this->storeModel->createStore($request->all());
 
-        $store->users()->save(auth()->user(), ['role' => 'owner']);
+        if (!$store) {
+            return ['message' => 'error occured'];
+        }
+        // $store->users()->save(auth()->user(), ['role' => 'owner']);
 
         return $store;
     }
@@ -47,15 +48,13 @@ class StoreController extends Controller
         ]);
 
         $store = $this->storeModel
-                ->updateStore($request->except('storeId'), $request->storeId, true);
+            ->updateStore($request->except('storeId'), $request->storeId, true);
 
         return new StoreResource($store);
     }
 
     public function show(Store $shortname)
     {
-        Log::debug("Store routekey name " . print_r($shortname, true));
         return new StoreResource($shortname);
     }
-
 }
