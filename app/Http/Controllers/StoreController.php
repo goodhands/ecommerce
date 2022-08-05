@@ -9,6 +9,7 @@ use App\Repositories\StoreRepository;
 use App\Models\Store;
 use App\Models\Store\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class StoreController extends Controller
 {
@@ -28,6 +29,7 @@ class StoreController extends Controller
             'category' => 'required|string',
             'industry' => 'required|string',
             'shortname' => 'required|string|max:100|alpha_dash|unique:stores,shortname',
+            'name' => 'required|string',
         ]);
 
         $store = $this->storeModel->createStore($request->all());
@@ -52,6 +54,7 @@ class StoreController extends Controller
 
     public function show(Store $shortname)
     {
+        Log::debug("Store routekey name " . print_r($shortname, true));
         return new StoreResource($shortname);
     }
 
