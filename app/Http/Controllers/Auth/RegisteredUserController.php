@@ -35,7 +35,8 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'store' => 'required|string|max:100|alpha_dash|unique:stores,shortname',
-            'name' => 'required|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|confirmed|min:8',
         ]);
@@ -44,7 +45,8 @@ class RegisteredUserController extends Controller
         $store = $this->storeModel->initialize($request->store);
 
         $user = User::create([
-            'name' => $request->name,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -54,7 +56,11 @@ class RegisteredUserController extends Controller
         $token = $user->createToken('auth_token', ['']);
 
         //attach the user to the store as the owner
-        $store->users()->save($user, ['role' => 'owner']);
+        $store->users()->save($user, [
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'role' => 'owner'
+        ]);
 
         event(new Registered($user));
 
@@ -71,13 +77,15 @@ class RegisteredUserController extends Controller
     public function stepTwo(Request $request)
     {
         $request->validate([
+            'name' => 'sometimes|string',
             'size' => 'required|string',
             'category' => 'required|string',
             'industry' => 'required|string',
             'storeId' => 'required|integer'
         ]);
 
-        $store = $this->storeModel
+        $store = $this
+                    ->storeModel
                     ->updateStore($request->except(['storeId', 'step']), $request->storeId, false);
 
         //emit event for newly created store

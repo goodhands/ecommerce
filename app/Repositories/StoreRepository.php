@@ -95,7 +95,8 @@ class StoreRepository
      * Find a store by shortname.
      * Shortname is our primary key
      */
-    public function findStore($shortname){
+    public function findStore($shortname)
+    {
         return Store::where('shortname', $shortname)->first();
     }
 }
