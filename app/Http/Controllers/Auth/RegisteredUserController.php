@@ -36,6 +36,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'store_name' => 'required|string|max:500',
             'store' => 'required|string|max:150|alpha_dash|unique:stores,shortname',
+            // Custom URLs will be a paid feature
             'url' => 'sometimes|string|max:300|alpha_dash|unique:stores,url',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -58,8 +59,8 @@ class RegisteredUserController extends Controller
         //attach the user to the store as the owner
         $store->users()->save($user, ['role' => 'owner']);
 
-        // Google analytics for thsi store
-        $this->storeModel->createGAProperty($store);
+        // Google analytics for this store
+        $streamId = $this->storeModel->createGAProperty($store);
 
         event(new Registered($user));
 
@@ -71,6 +72,7 @@ class RegisteredUserController extends Controller
             "shortname" => $store->shortname,
             "url" => $store->url,
             "storeId" => $store->id,
+            "gaStreamId" => $streamId,
             "token" => $token->plainTextToken
         ], 201);
     }

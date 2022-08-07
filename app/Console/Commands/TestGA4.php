@@ -111,7 +111,6 @@ class TestGA4 extends Command
 
         try {
             $property = $client->propertyName($propertyName);
-            // $client->createDataStream();
             return $client->createDataStream($property, $stream);
         } catch (Exception $e) {
             throw $e;
