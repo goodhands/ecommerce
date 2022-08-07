@@ -6,6 +6,7 @@ use App\Events\StoreCreated;
 use App\Events\TrackNewUser;
 use App\Http\Resources\StoreResource;
 use App\Models\Store;
+use Illuminate\Support\Str;
 use App\Repositories\Traits\Products as HasProducts;
 use App\Repositories\Traits\Collections as HasCollections;
 use App\Repositories\Traits\Customers as HasCustomers;
@@ -14,22 +15,31 @@ use App\Repositories\Traits\Orders as HasOrders;
 use App\Repositories\Traits\Payments as HasPayments;
 use App\Repositories\Traits\Secrets as HasSecrets;
 use App\Repositories\Traits\Media as HasMedia;
+use App\Repositories\Traits\Analytics as HasAnalytics;
 use Exception;
 
 class StoreRepository
 {
-
-    use HasProducts, HasCollections, HasCustomers, HasSecrets, HasPayments, HasOrders, HasDelivery, HasMedia;
+    use HasProducts;
+    use HasCollections;
+    use HasCustomers;
+    use HasSecrets;
+    use HasPayments;
+    use HasOrders;
+    use HasDelivery;
+    use HasMedia;
+    use HasAnalytics;
 
     public function __construct(Store $store)
     {
         $this->storeModel = $store;
     }
 
-    public function initialize(string $storeName)
+    public function initialize(array $data)
     {
         $store = Store::create([
-            'shortname' => $storeName
+            'shortname' => $data['store'],
+            'url' => isset($data['url']) && $data['url'] !== "" ? $data['url'] : $this->createUniqueStoreUrl($data['store']),
         ]);
 
         //queue a job that will run if the user doesn't complete sign up
@@ -95,7 +105,22 @@ class StoreRepository
      * Find a store by shortname.
      * Shortname is our primary key
      */
-    public function findStore($shortname){
+    public function findStore($shortname)
+    {
         return Store::where('shortname', $shortname)->first();
+    }
+
+    public function createUniqueStoreUrl($shortname)
+    {
+        $shortname = "https://" . $shortname . "myduxstore.com";
+        $urlExists = Store::where('url', $shortname)->exists;
+
+        if (!$urlExists) {
+            return $shortname;
+        }
+
+        $url = $shortname . Str::random(4);
+
+        return $this->createUniqueStoreUrl($url);
     }
 }

@@ -91,7 +91,7 @@ class TestGA extends Command
         try {
             $property = new Google_Service_Analytics_Webproperty();
             // Get the storename the user has used as the name here
-            $property->setName('Userstore Store 2');
+            $property->setName('Tent Store');
             $property->setWebsiteUrl('https://duxstore.myduxstore.com');
             // We should set this based on what the user provides as industry
             // @see https://developers.google.com/analytics/devguides/config/mgmt/v3/

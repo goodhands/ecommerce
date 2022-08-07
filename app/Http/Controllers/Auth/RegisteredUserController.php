@@ -34,14 +34,16 @@ class RegisteredUserController extends Controller
     public function stepOne(Request $request)
     {
         $request->validate([
-            'store' => 'required|string|max:100|alpha_dash|unique:stores,shortname',
+            'store_name' => 'required|string|max:500',
+            'store' => 'required|string|max:150|alpha_dash|unique:stores,shortname',
+            'url' => 'sometimes|string|max:300|alpha_dash|unique:stores,url',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|confirmed|min:8',
         ]);
 
-        //Initialize Store
-        $store = $this->storeModel->initialize($request->store);
+        //Initialize Store | Frontend should send a full URL like https://fairydaisy.myduxstore.com
+        $store = $this->storeModel->initialize($request->only(['url', 'store']));
 
         $user = User::create([
             'name' => $request->name,
@@ -50,11 +52,14 @@ class RegisteredUserController extends Controller
         ]);
 
         // Create a token to be used for auth.
-        // Token abilities may be granted based on the user's plan
+        // Token abilities may be granted based on the user's plan or role in a store
         $token = $user->createToken('auth_token', ['']);
 
         //attach the user to the store as the owner
         $store->users()->save($user, ['role' => 'owner']);
+
+        // Google analytics for thsi store
+        $this->storeModel->createGAProperty($store);
 
         event(new Registered($user));
 
@@ -62,7 +67,9 @@ class RegisteredUserController extends Controller
             "status" => "Success",
             "message" => "Registration successful",
             "user" => $user,
-            "storeName" => $store->shortname,
+            "storename" => $store->shortname,
+            "shortname" => $store->shortname,
+            "url" => $store->url,
             "storeId" => $store->id,
             "token" => $token->plainTextToken
         ], 201);
