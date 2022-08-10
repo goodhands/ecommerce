@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "duxstore-358301",
+    "private_key_id": "1fbf37dc03615dc823b931ef90b5df3d0b36ed43",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC2tRvI46nVNMMt\nGVqMi0Y3h9pentHHBw5fNJ3K4Ij7GVsLIE2eAidYqJlhlWqis7fIUQzChcX6l/GT\nePyiAmycsh/lxtFDiUUHxB3Db5M8yD3gKN66yxh5jJiH0IVBNbDVWexwggkJQTLX\nbVK4h0oXW8v3UpdOMGO18FrPHlwtYq3EBIgXFRwVFBMBoGe05T6zxxFyjxeDbTNt\nFwysBxxhelgDCA2vojpQAsXwJj33GMCkIPS0P/1l8/qo8Ilv5klw4+wUN4Kd95km\nUzE0KHRf6pm0dlr22LNR5BUXJd4A85Ye+YjRC1e2mHOX8dqTqbjryMAvkWAudhOc\nCZNtyJAXAgMBAAECggEAEeMnmLfSk+PfVdt9Fh8Oh/eTb/Rhj6LdC9dwDqwujP1z\nAI2wO6TKAFqP8FH7XM7L0ono02SFuPPGPAy6GGG0th8+6IqEnfWNnhCGZMYC0WO9\n9w5ZRqAFQeUmC786RI5CmpNRXBnG/l0f4p+6hllXGMlXwzDBTRoyBjPFWDCzOo1w\nsQ97nELJiPEJ+LLUheHf0KhWEGQB2WqWF5F9N2O8yfhuq1G051awAEZYTywlsDmA\nLZ4zOno76WkpEHOuWZqQdWyDSm79rqc+xtk9rL/X5LJNiPAGu7Nq3+KbYnwfS13M\njC6Tdw9LgyA+eCoDCOp7LuhUBoZBQqxRZqiB2MmczQKBgQD55lH/+yuQafKRgV5X\nb8nHslu41Lop8EA9j9IoKLClkXSbpisXsTQTUxR2RVLMzvU0kc4CyTmkDaC/SgOU\nLwvbtoodLS3J8Ikd+qOfoPQNz+miK+Q202BLeidJafNWhg2qLCSGNo/j4B5+ncTs\nM2jJJfcCR+HF3QgoAqGsNaIZWwKBgQC7KuOFZkMMM4lkwegmA2CfTW9BDAfRCWZJ\n4RbsjQj8a4wfwvhc30dWNdHtG+AdlhtaC+lnhvc5l7+qaZhz5urMUO5768E5/5SN\n7s45PsVE3AECyexfgZR1W0JjKd5sgIN3lwTgcAn/B4P+k6DuIE0dfrmgGy9E1/JK\nJeUImLik9QKBgFnSUz7zBKGPs0Rhf4tl/tzsWtOAgrl4RV7bRupwVa3tLkCT5YFK\njDE193DbUfuTl8chcS7HLRSuYUzgSZEFp/l9Dv+VsZOYBXDlGdLSg2ZDiPJlXE3o\nhAAdE+nrTy+WV2sHGsmy6t05PTy9cH6Fq/BA2RvUwm3gGIJpD7taO71pAoGAQFFf\nuELI/ZNkPnyoAxAcDwI0Hh09PmdFgFPaZdWdZeirUWrVoEyWHhkGl72BiYlAwvPe\n9FWb9W2hTrVUz1dmDmotWeZNE1oxuYh7044vihc0PboYAUXtN1rx+FO1/IE5LEp4\nQYwe00XI5R3kKpBtD5qxvUQ6PSUcPMDC8O5SXVUCgYB7D80BN3J0KVTQd9HWDCqu\nBOawkE3rJWQEBItu8adBx9tIkOlyna06ezUP1k107mh8Exsd9IFqmXZngvQ9Zc3w\nXB9B348B/2wXHIP/QQOyM06KOrNLSfwqKf8Q58xyt+xZPDVY39zq0i06dsmQJ3w8\nvGnJFFDOj8hPkCljn+L8eg==\n-----END PRIVATE KEY-----\n",
+    "client_email": "duxdev@duxstore-358301.iam.gserviceaccount.com",
+    "client_id": "109432180149574534237",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/duxdev%40duxstore-358301.iam.gserviceaccount.com"
+}

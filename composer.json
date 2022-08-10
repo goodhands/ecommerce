@@ -36,6 +36,8 @@
         "doctrine/dbal": "^3.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
+        "google/analytics-admin": "^0.6.4",
+        "google/analytics-data": "^0.8.6",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/cashier": "^13.9",
         "laravel/framework": "^8.12",
