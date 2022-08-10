@@ -21,10 +21,6 @@
             "url": "https://github.com/goodhands/ecommerce"
         },
         {
-            "type": "vcs",
-            "url": "https://github.com/goodhands/laravel-paystack"
-        },
-        {
             "type": "composer",
             "url": "https://packagist.org"
         },
