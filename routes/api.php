@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,21 +26,21 @@ Route::get('/', function (Request $request) {
     ];
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 /**
  * Subscription endpoints
  */
-require __DIR__.'/subscription.php';
+require __DIR__ . '/subscription.php';
 
 //Store Endpoints
-require __DIR__.'/store.php';
+require __DIR__ . '/store.php';
 
 //Orders
-require __DIR__.'/order.php';
+require __DIR__ . '/order.php';
 
 //Secrets
-require __DIR__ .'/secrets.php';
+require __DIR__ . '/secrets.php';
 
 //Payment Methods
 require __DIR__ . '/payment.php';

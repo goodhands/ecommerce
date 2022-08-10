@@ -114,7 +114,7 @@ class CollectionController extends Controller
         return $this->store->searchCollection($keyword, $shortname);
     }
 
-    public function addProduct(Store $shortname, Request $request)
+    public function addProductToCollection(Store $shortname, Request $request)
     {
         $request->validate([
             'collectionId' => 'required|integer',

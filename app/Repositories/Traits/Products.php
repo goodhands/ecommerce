@@ -8,14 +8,13 @@ use App\Models\Store\Products\VariantInventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-trait Products{
+trait Products
+{
     /**
      * Add products to a store
      */
     public function addProducts(Request $data, $store, $productId = null)
     {
-        $productHelper = new Product();
-
         //require auth to create a product
         $this->userHasAccess($store);
 
@@ -24,11 +23,11 @@ trait Products{
 
         //create product
         if (!$productId) {
-            $product = $productHelper::create($productData);
+            $product = Product::create($productData);
         } else {
-            $didUpdate = $productHelper::whereId($productId)
+            $didUpdate = Product::whereId($productId)
                             ->update($productData);
-            if($didUpdate) $product = $productHelper::find($productId);
+            if ($didUpdate) $product = Product::find($productId);
         }
 
         //if variants exists, work on 'em
@@ -52,7 +51,8 @@ trait Products{
      * 2. We get the individual variant values and their stock w/ price
      * and save to the db.
      */
-    public function createVariants($variants, $product){
+    public function createVariants($variants, $product)
+    {
         //these will always return array
         $variantTypes = $variants['variation']['variations'];
         $variantInventory = $variants['variation']['inventory'];

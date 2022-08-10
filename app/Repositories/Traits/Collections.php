@@ -37,8 +37,10 @@ trait Collections
                     ->get();
     }
 
-    public function addProduct($collectionId, $productId, $store)
+    public function addProductToCollection($collectionId, $productId, $store)
     {
+        // TODO: A collection must belong to a store. And so we need to make sure this store has the right to use this collection
+
         $this->userHasAccess($store);
 
         $collection = Collection::find($collectionId);

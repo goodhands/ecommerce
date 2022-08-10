@@ -47,7 +47,8 @@ class RegisteredUserController extends Controller
         $store = $this->storeModel->initialize($request->only(['url', 'store']));
 
         $user = User::create([
-            'name' => $request->name,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -57,7 +58,11 @@ class RegisteredUserController extends Controller
         $token = $user->createToken('auth_token', ['']);
 
         //attach the user to the store as the owner
-        $store->users()->save($user, ['role' => 'owner']);
+        $store->users()->save($user, [
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'role' => 'owner'
+        ]);
 
         // Google analytics for this store
         $streamId = $this->storeModel->createGAProperty($store);
@@ -80,14 +85,16 @@ class RegisteredUserController extends Controller
     public function stepTwo(Request $request)
     {
         $request->validate([
+            'name' => 'sometimes|string',
             'size' => 'required|string',
             'category' => 'required|string',
             'industry' => 'required|string',
             'storeId' => 'required|integer'
         ]);
 
-        $store = $this->storeModel
-                    ->updateStore($request->except(['storeId', 'step']), $request->storeId, false);
+        $store = $this
+            ->storeModel
+            ->updateStore($request->except(['storeId', 'step']), $request->storeId, false);
 
         //emit event for newly created store
         event(new StoreCreated($store));

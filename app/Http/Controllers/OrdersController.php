@@ -8,8 +8,8 @@ use App\Models\Store\Customer;
 use App\Models\Store\Order;
 use App\Repositories\StoreRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
-use Exception;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class OrdersController extends Controller
@@ -25,12 +25,13 @@ class OrdersController extends Controller
     /**
      * Call order methods based on step
      */
-    public function checkout(Request $request, Store $store){
-        if($request->step == "customer"){
+    public function checkout(Request $request, Store $store)
+    {
+        if ($request->step == "customer") {
             return $this->addCustomer($request, $store);
         }
 
-        if($request->step == "products"){
+        if ($request->step == "products") {
             return $this->store($request, $store);
         }
     }
@@ -42,7 +43,8 @@ class OrdersController extends Controller
      * will be redirected to for payment based on
      * the provider they selected.
      */
-    public function store($request, $store){
+    public function store($request, $store)
+    {
         $request->validate([
             'products' => "array|required",
             'payment_method' => 'integer|required', //ID of provider, e.g: Paystack, Flutterwave, etc
@@ -60,7 +62,7 @@ class OrdersController extends Controller
         $store->orders()->save($order);
 
         //save products to the order
-        foreach((array) $request->products as $product){
+        foreach ((array) $request->products as $product) {
             $order->products()->attach($product['product'], ['quantity' => $product['qty']]);
         }
 
@@ -83,7 +85,8 @@ class OrdersController extends Controller
      * Endpoint to store a customer details during
      * checkout
     */
-    public function addCustomer($request, $store){
+    public function addCustomer($request, $store)
+    {
         $request->validate([
             'firstname' => 'required_without:lastname|string',
             'lastname' => 'required_without:firstname|string',
@@ -104,9 +107,9 @@ class OrdersController extends Controller
                             ->where('store_id', $store->id)
                             ->first();
 
-        if(!$customer){
+        if (!$customer) {
             return $this->storeModel->addCustomers($request->except('step'), $store);
-        }else{
+        } else {
             //pass the customer found and update it
             return $this->storeModel->updateCustomers($request->except('step'), $customer, $store);
         }
@@ -115,7 +118,8 @@ class OrdersController extends Controller
     /**
      * Show all orders
      */
-    public function index(Store $store, Request $request){
+    public function index(Store $store, Request $request)
+    {
         //make sure only the admin can do this
         $this->storeModel->userHasAccess($store);
 
@@ -138,10 +142,9 @@ class OrdersController extends Controller
      */
     public function show(Store $store, Order $order)
     {
-        $resource = $order->with(['customer', 'products', 'delivery', 'payment'])->first();
-        \Log::debug("Order details " . print_r($resource, true));
+        $order->load(['customer', 'products', 'delivery', 'payment']);
 
-        return $resource;
+        return $order;
     }
 
     /**
@@ -164,12 +167,12 @@ class OrdersController extends Controller
 
         $order->save();
 
-        $checkout = $store->url . $store->shortname."/checkout/?order=".$order->id."&status=complete";
+        $checkout = $store->url . $store->shortname . "/checkout/?order=" . $order->id . "&status=complete";
 
-        if($verifiedPayment->data->status == "success"){
+        if ($verifiedPayment->data->status == "success") {
             return redirect($checkout);
-        }else{
-            return redirect( str_replace("complete", "failed", $checkout) );
+        } else {
+            return redirect(str_replace("complete", "failed", $checkout));
         }
     }
 }

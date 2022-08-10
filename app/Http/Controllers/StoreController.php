@@ -9,6 +9,7 @@ use App\Repositories\StoreRepository;
 use App\Models\Store;
 use App\Models\Store\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class StoreController extends Controller
 {
@@ -54,6 +55,7 @@ class StoreController extends Controller
 
     public function show(Store $shortname)
     {
+        Log::debug("Store routekey name " . print_r($shortname, true));
         return new StoreResource($shortname);
     }
 
