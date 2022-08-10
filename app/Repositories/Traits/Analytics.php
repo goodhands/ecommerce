@@ -50,8 +50,8 @@ trait Analytics
             $property = $client->createProperty($property);
             // Create Stream
             $store_url = Store::find($data['id'])->url;
-            $stream = $this->createGAWebStream($client, $store_url, "properties/" . $property->getName());
-
+            // $stream = $this->createGAWebStream($client, $store_url, "properties/" . $property->getName());
+            // Insert db
             Log::debug("Create property {$property->getName()} for stream {$stream->getName()}");
         } catch (Exception $e) {
             throw $e;
@@ -76,5 +76,10 @@ trait Analytics
     public function createConversionEvent()
     {
         //
+    }
+
+    public function getGAReport()
+    {
+
     }
 }

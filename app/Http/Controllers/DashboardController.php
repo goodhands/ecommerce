@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use Carbon\Carbon;
+use App\Repositories\StoreRepository;
 
 class DashboardController extends Controller
 {
-    public function __construct(Carbon $carbon)
+    public function __construct(Carbon $carbon, StoreRepository $repository)
     {
         $this->carbon = $carbon;
+        $this->repository = $repository;
 
         //stats for this current week
         $this->dateQuery = [$this->carbon->startOfWeek(), $this->carbon->now()];
@@ -18,12 +20,13 @@ class DashboardController extends Controller
     /**
      * Get stats on sales, customers and visits for the last week
      */
-    public function getWeeklyStats(Store $store, Request $request){
+    public function getWeeklyStats(Store $store, Request $request)
+    {
         //sales involves where payment was confirmed
         $salesQuery = $store->orders()->where('payment_status', 'Paid')
                                 ->whereBetween('created_at', $this->dateQuery);
 
-        $response['sales_total'] = $salesQuery->pluck('total')->sum(); 
+        $response['sales_total'] = $salesQuery->pluck('total')->sum();
         $response['sales_link'] = 'orders?fulfilled=1&sort=Desc&from=last week&to=today';
 
         $response['new_orders'] = $store->orders()
@@ -37,19 +40,19 @@ class DashboardController extends Controller
         $response['customers_link'] = 'customers?sort=Desc&from=last week&to=today';
 
         //TODO:set up google analytics
-
+        $response['customers_link'] = $this->repository->getGAReport([today, next week]);
         return $response;
     }
 
     /**
-     * Returns 3 recent order with other meta data 
+     * Returns 3 recent order with other meta data
      * to see all
      */
     public function getRecentOrders(Store $store, Request $request){
         $query = $store->orders()->where('fulfilled', false)
                             ->where('payment_status', 'Paid');
         $data['orders'] = $query->with(['products', 'customer'])
-                                ->latest()    
+                                ->latest()
                                 ->get();
         $data['orders_count'] = $query->count();
 
