@@ -35,7 +35,10 @@ class StoreController extends Controller
 
         $store = $this->storeModel->createStore($request->all());
 
-        $store->users()->save(auth()->user(), ['role' => 'owner']);
+        if (!$store) {
+            return ['message' => 'error occured'];
+        }
+        // $store->users()->save(auth()->user(), ['role' => 'owner']);
 
         return $store;
     }
@@ -48,15 +51,13 @@ class StoreController extends Controller
         ]);
 
         $store = $this->storeModel
-                ->updateStore($request->except('storeId'), $request->storeId, true);
+            ->updateStore($request->except('storeId'), $request->storeId, true);
 
         return new StoreResource($store);
     }
 
     public function show(Store $shortname)
     {
-        Log::debug("Store routekey name " . print_r($shortname, true));
         return new StoreResource($shortname);
     }
-
 }

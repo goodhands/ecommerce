@@ -17,6 +17,8 @@ use App\Repositories\Traits\Secrets as HasSecrets;
 use App\Repositories\Traits\Media as HasMedia;
 use App\Repositories\Traits\Analytics as HasAnalytics;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class StoreRepository
 {
@@ -30,9 +32,10 @@ class StoreRepository
     use HasMedia;
     use HasAnalytics;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, HasAnalyticsRepository $analytics)
     {
         $this->storeModel = $store;
+        $this->analytics = $analytics;
     }
 
     public function initialize(array $data)
@@ -81,11 +84,31 @@ class StoreRepository
 
     public function createStore(array $data)
     {
-        $store = Store::create($data);
 
-        event(new StoreCreated($data));
+        try{
+            DB::beginTransaction();
+            $store = Store::create($data);
 
-        return new StoreResource($store);
+            $Analyticsdata = $this->analytics->handle($store->name);
+            $analyticsInfo = [
+                'store_id' => $store->id,
+                'ga_store_id' => $Analyticsdata['ga_store_id'],
+                'view_id' => $Analyticsdata['view_id'],
+                'ga_tracking_id' => $Analyticsdata['ga_tracking_id'],
+                'url' => $Analyticsdata['url'],
+                'date_created' => $Analyticsdata['created'],
+                'date_updated' => $Analyticsdata['updated']
+            ];
+            StoreAnalytics::create($analyticsInfo);
+            $store->url = $Analyticsdata['url'];
+
+            event(new StoreCreated($data));
+            DB::commit();
+            return new StoreResource($store);
+        }catch(Throwable $e){
+            DB::rollBack();
+            return $e;
+        }
     }
 
     /**
