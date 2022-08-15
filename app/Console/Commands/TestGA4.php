@@ -70,7 +70,7 @@ class TestGA4 extends Command
     public function createProperty($client)
     {
         $property = new Property();
-        $property->setDisplayName("200 Duxstore");
+        $property->setDisplayName("300 Duxstore");
         $property->setAccount("accounts/" . self::$ACCOUNT_ID);
         // $property->setPropertyType("ORDINARY_PROPERTY");
         $property->setParent("accounts/" . self::$ACCOUNT_ID);
@@ -94,7 +94,7 @@ class TestGA4 extends Command
     public function createStreams($client, $propertyName)
     {
         $webStream = new WebStreamData();
-        $webStream->setDefaultUri('https://100.myduxstore.co');
+        $webStream->setDefaultUri('https://300.myduxstore.co');
 
         echo "name: " . $propertyName;
 

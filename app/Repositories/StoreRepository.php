@@ -19,6 +19,7 @@ use App\Repositories\Traits\Analytics as HasAnalytics;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Throwable;
+use Illuminate\Support\Facades\Log;
 
 class StoreRepository
 {
@@ -42,6 +43,7 @@ class StoreRepository
     {
         $store = Store::create([
             'shortname' => $data['store'],
+            'name' =>isset($data['store_name']) ? $data['store_name'] : $data['store'],
             'url' => isset($data['url']) && $data['url'] !== "" ? $data['url'] : $this->createUniqueStoreUrl($data['store']),
         ]);
 
@@ -117,7 +119,9 @@ class StoreRepository
      */
     public function userHasAccess($store)
     {
-        if (!auth()->user()) throw new Exception("User is not authenticated");
+        if (!auth()->user()) {
+            throw new Exception("User is not authenticated");
+        }
 
         if (auth()->user()->cannot('update', $store)) {
             throw new Exception("You do not have the right permissions for that action");
@@ -135,14 +139,14 @@ class StoreRepository
 
     public function createUniqueStoreUrl($shortname)
     {
-        $shortname = "https://" . $shortname . "myduxstore.com";
-        $urlExists = Store::where('url', $shortname)->exists;
+        $url = "https://" . $shortname . ".myduxstore.com";
+        $urlExists = Store::where('url', $url)->count() > 0;
 
         if (!$urlExists) {
-            return $shortname;
+            return $url;
         }
 
-        $url = $shortname . Str::random(4);
+        $url = "https://" . $shortname . Str::random(4) . ".myduxstore.com";
 
         return $this->createUniqueStoreUrl($url);
     }

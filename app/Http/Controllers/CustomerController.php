@@ -7,7 +7,8 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 class CustomerController extends Controller
 {
-    public function index(Store $store, Request $request){
+    public function index(Store $store, Request $request)
+    {
         QueryBuilder::for($store->customers())
                     ->allowedFilters(
                         AllowedFilter::scope('date_between')

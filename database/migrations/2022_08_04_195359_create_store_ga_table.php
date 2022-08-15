@@ -16,13 +16,9 @@ class CreateStoreGaTable extends Migration
         Schema::create('ga_store', function (Blueprint $table) {
             $table->id();
             $table->foreignId('store_id')->nullable()->constrained('stores')->onDelete('cascade');
-            $table->string('ga_store_id');
-            $table->string('ga_tracking_id');
-            $table->string('date_created');
-            $table->string('date_updated');
-            $table->string('url');
-            $table->enum('type', ['ua', 'ga4'])->default('ua');
-            $table->string('view_id');
+            $table->string('property_id');
+            $table->string('measurement_id');
+            $table->enum('type', ['ua', 'ga4'])->default('ga4');
             $table->timestamps();
         });
     }

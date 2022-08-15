@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use Google\Analytics\Data\V1alpha\Filter;
 use Illuminate\Console\Command;
 use Google\Analytics\Data\V1beta\BetaAnalyticsDataClient;
 use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
 use Google\Analytics\Data\V1beta\DateRange;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 
 class GAReport extends Command
 {
@@ -62,24 +64,36 @@ class GAReport extends Command
 
     public function report($client)
     {
+        $carbon = new Carbon();
+
         $response = $client->runReport([
             'property' => 'properties/325248268',
             'dateRanges' => [
                 new DateRange([
-                    'start_date' => '2020-03-31',
-                    'end_date' => 'today',
+                    'start_date' => (string) $carbon->startOfWeek(0)->format('Y-m-d'),
+                    'end_date' => (string) $carbon::now()->format('Y-m-d'),
                 ]),
             ],
             'dimensions' => [
                 new Dimension(
                     [
                         'name' => 'city',
+                    ],
+                    [
+                        'name' => 'country',
+                    ],
+                    [
+                        'name' => 'event'
+                    ],
+                    [
+                        'name' => 'sessions'
                     ]
                 ),
             ],
-            'metrics' => [new Metric(
+            'metrics' => [
+                new Metric(
                     [
-                        'name' => 'activeUsers',
+                        'name' => 'active7DayUsers',
                     ]
                 )
             ]
@@ -88,8 +102,9 @@ class GAReport extends Command
         Log::debug("Report rows " . print_r($response->getRows(), true));
         foreach ($response->getRows() as $row) {
             foreach ($row->getDimensionValues() as $dimensionValue) {
-                Log::debug("Dimensions rows " . print_r($dimensionValue->getValue(), true));
+                // Log::debug("Dimensions rows " . print_r($dimensionValue->getValue(), true));
                 print 'Dimension Value: ' . $dimensionValue->getValue() . PHP_EOL;
+                // print 'Dimension Name: ' . $dimensionValue->getName() . PHP_EOL;
             }
         }
     }
