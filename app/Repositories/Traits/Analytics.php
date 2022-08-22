@@ -138,8 +138,8 @@ trait Analytics
                 'property' => $property_id,
                 'dateRanges' => [
                     new DateRange([
-                        'start_date' => $carbon->startOfWeek(0),
-                        'end_date' => $carbon::now(),
+                        'start_date' => (string) $carbon->startOfWeek(0)->format('Y-m-d'),
+                        'end_date' => (string) $carbon::now()->format('Y-m-d'),
                     ]),
                 ],
                 'dimensions' => [
@@ -155,7 +155,7 @@ trait Analytics
                 'metrics' => [
                     new Metric(
                         [
-                            'name' => 'active7DayUsers',
+                            'name' => 'activeUsers',
                         ]
                     )
                 ]
@@ -164,8 +164,8 @@ trait Analytics
             $data = array();
 
             foreach ($response->getRows() as $row) {
-                foreach ($row->getDimensionValues() as $dimension) {
-                    $data[] = $dimension->getValue();
+                foreach ($row->getMetricValues() as $metric) {
+                    $data['views'] = $metric->getValue();
                 }
             }
 
@@ -192,8 +192,8 @@ trait Analytics
                 'property' => $property_id,
                 'dateRanges' => [
                     new DateRange([
-                        'start_date' => $carbon->startOfWeek(0),
-                        'end_date' => $carbon::now(),
+                        'start_date' => (string) $carbon->startOfWeek(0)->format('Y-m-d'),
+                        'end_date' => (string) $carbon::now()->format('Y-m-d'),
                     ]),
                 ],
                 'dimensions' => [
@@ -208,7 +208,7 @@ trait Analytics
                             'name' => 'screenResolution',
                         ],
                         [
-                            'name' => 'event'
+                            'name' => 'eventName'
                         ]
                     ),
                 ],
@@ -241,6 +241,8 @@ trait Analytics
                     $data[] = $dimension->getValue();
                 }
             }
+
+            Log::debug('Product views data ' . print_r($data, true));
 
             return collect($data);
         });

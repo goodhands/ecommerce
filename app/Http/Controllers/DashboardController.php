@@ -42,9 +42,8 @@ class DashboardController extends Controller
 
         $response['customers_link'] = 'customers?sort=-created_at&filter[date_between]=last week,today';
 
-        //TODO:set up google analytics
         $response['store_url'] = $store->url;
-        $response['visits'] = rand(50000, 100000);
+        $response['visits'] = $this->repository->getStoreVisits($store->id);
 
         return $response;
     }

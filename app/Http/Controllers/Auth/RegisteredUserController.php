@@ -96,9 +96,6 @@ class RegisteredUserController extends Controller
             ->storeModel
             ->updateStore($request->except(['storeId', 'step']), $request->storeId, false);
 
-        //emit event for newly created store
-        event(new StoreCreated($store));
-
         return $store;
     }
 

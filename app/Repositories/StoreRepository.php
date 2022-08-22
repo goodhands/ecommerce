@@ -76,6 +76,9 @@ class StoreRepository
             ->update($data);
 
         if (1 == $didUpdate) {
+            //emit event for newly created store
+            event(new StoreCreated($store));
+
             //we want to return the newly updated details to
             //the user and not the old details
             return Store::find($storeId);

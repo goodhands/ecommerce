@@ -74,37 +74,33 @@ class GAReport extends Command
                     'end_date' => (string) $carbon::now()->format('Y-m-d'),
                 ]),
             ],
-            'dimensions' => [
-                new Dimension(
-                    [
-                        'name' => 'city',
-                    ],
-                    [
-                        'name' => 'country',
-                    ],
-                    [
-                        'name' => 'event'
-                    ],
-                    [
-                        'name' => 'sessions'
-                    ]
-                ),
-            ],
             'metrics' => [
                 new Metric(
                     [
-                        'name' => 'active7DayUsers',
+                        'name' => 'activeUsers',
                     ]
                 )
             ]
         ]);
 
-        Log::debug("Report rows " . print_r($response->getRows(), true));
         foreach ($response->getRows() as $row) {
             foreach ($row->getDimensionValues() as $dimensionValue) {
                 // Log::debug("Dimensions rows " . print_r($dimensionValue->getValue(), true));
                 print 'Dimension Value: ' . $dimensionValue->getValue() . PHP_EOL;
+                $data['dimension value'] = $dimensionValue->getValue();
                 // print 'Dimension Name: ' . $dimensionValue->getName() . PHP_EOL;
+
+                Log::debug("Dimension value " . print_r($row->getDimensionValues(), true));
+            }
+
+            foreach ($row->getMetricValues() as $metricValue) {
+                // Log::debug("Dimensions rows " . print_r($dimensionValue->getValue(), true));
+                print 'Metric value Value: ' . $metricValue->getValue() . PHP_EOL;
+                $data['Metric value'] = $metricValue->getValue();
+                // print 'Dimension Name: ' . $dimensionValue->getName() . PHP_EOL;
+
+                Log::debug("Metric value " . print_r($row->getMetricValues(), true));
+
             }
         }
     }
