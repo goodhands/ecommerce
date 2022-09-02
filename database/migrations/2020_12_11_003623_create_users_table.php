@@ -42,6 +42,13 @@ class CreateUsersTable extends Migration
                 ->on('stores')
                 ->onDelete('cascade');
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('stripe_id')->nullable()->index();
+            $table->string('pm_type')->nullable();
+            $table->string('pm_last_four', 4)->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
+        });
     }
 
     /**
@@ -51,6 +58,15 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn([
+                'stripe_id',
+                'pm_type',
+                'pm_last_four',
+                'trial_ends_at',
+            ]);
+        });
+
         Schema::dropIfExists('users');
     }
 }
