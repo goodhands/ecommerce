@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubscriptionsTable extends Migration
+class CreateStoreGaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class CreateSubscriptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('subscriptions', function (Blueprint $table) {
+        Schema::create('ga_store', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('store_id')->nullable()->constrained('stores')->onDelete('cascade');
+            $table->string('property_id');
+            $table->string('measurement_id');
+            $table->enum('type', ['ua', 'ga4'])->default('ga4');
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ class CreateSubscriptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subscriptions');
+        Schema::dropIfExists('store_ga');
     }
 }

@@ -34,17 +34,20 @@ class RegisteredUserController extends Controller
     public function stepOne(Request $request)
     {
         $request->validate([
-            'store' => 'required|string|max:100|alpha_dash|unique:stores,shortname',
+            'store_name' => 'sometimes|string|max:500',
+            'store' => 'required|string|max:150|alpha_dash|unique:stores,shortname',
+            // Custom URLs will be a paid feature: if empty, we will generate it
+            'url' => 'sometimes|string|max:300|alpha_dash|unique:stores,url',
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|confirmed|min:8',
         ]);
 
-        //Initialize Store
-        $store = $this->storeModel->initialize($request->store);
+        //Initialize Store | Frontend should send a full URL like https://fairydaisy.myduxstore.com
+        $store = $this->storeModel->initialize($request->only(['url', 'store', 'store_name']));
 
-        $user = User::create([
+        $user = User::firstOrCreate([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'email' => $request->email,
@@ -52,7 +55,7 @@ class RegisteredUserController extends Controller
         ]);
 
         // Create a token to be used for auth.
-        // Token abilities may be granted based on the user's plan
+        // Token abilities may be granted based on the user's plan or role in a store
         $token = $user->createToken('auth_token', ['']);
 
         //attach the user to the store as the owner
@@ -62,14 +65,20 @@ class RegisteredUserController extends Controller
             'role' => 'owner'
         ]);
 
+        // Google analytics for this store
+        $measurement_id = $this->storeModel->createGAProperty($store);
+
         event(new Registered($user));
 
         return response()->json([
             "status" => "Success",
             "message" => "Registration successful",
             "user" => $user,
-            "storeName" => $store->shortname,
+            "storename" => $store->name,
+            "shortname" => $store->shortname,
+            "url" => $store->url,
             "storeId" => $store->id,
+            "measurement_id" => $measurement_id,
             "token" => $token->plainTextToken
         ], 201);
     }
@@ -77,7 +86,6 @@ class RegisteredUserController extends Controller
     public function stepTwo(Request $request)
     {
         $request->validate([
-            'name' => 'sometimes|string',
             'size' => 'required|string',
             'category' => 'required|string',
             'industry' => 'required|string',
@@ -85,11 +93,8 @@ class RegisteredUserController extends Controller
         ]);
 
         $store = $this
-                    ->storeModel
-                    ->updateStore($request->except(['storeId', 'step']), $request->storeId, false);
-
-        //emit event for newly created store
-        event(new StoreCreated($store));
+            ->storeModel
+            ->updateStore($request->except(['storeId', 'step']), $request->storeId, false);
 
         return $store;
     }

@@ -20,7 +20,7 @@ class CreateStoreTable extends Migration
             $table->string('industry')->nullable();
             $table->string('size')->nullable();
             $table->string('category')->nullable();
-            
+
             $table->string('current_billing_plan')->nullable();
             $table->string('card_type')->nullable();
             $table->string('last4')->nullable();

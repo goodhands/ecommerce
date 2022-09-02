@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use Carbon\Carbon;
+use App\Repositories\StoreRepository;
 
 class DashboardController extends Controller
 {
-    public function __construct(Carbon $carbon)
+    public function __construct(Carbon $carbon, StoreRepository $repository)
     {
         $this->carbon = $carbon;
+        $this->repository = $repository;
 
         //stats for this current week
         $this->dateQuery = [$this->carbon->startOfWeek(0), $this->carbon->now()];
@@ -40,15 +42,14 @@ class DashboardController extends Controller
 
         $response['customers_link'] = 'customers?sort=-created_at&filter[date_between]=last week,today';
 
-        //TODO:set up google analytics
         $response['store_url'] = $store->url;
-        $response['visits'] = rand(50000, 100000);
+        $response['visits'] = $this->repository->getStoreVisits($store->id);
 
         return $response;
     }
 
     /**
-     * Returns 5 recent order with other meta data
+     * Returns 3 recent order with other meta data
      * to see all
      */
     public function getRecentOrders(Store $store, Request $request)

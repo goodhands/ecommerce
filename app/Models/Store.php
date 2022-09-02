@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Store\Analytic;
 use App\Models\Store\Collections\Collections;
 use App\Models\Store\Customer;
 use App\Models\Store\Delivery\Methods as DeliveryMethods;
@@ -70,6 +71,11 @@ class Store extends Model
     public function customers()
     {
         return $this->hasMany(Customer::class);
+    }
+
+    public function analytic()
+    {
+        return $this->hasOne(Analytic::class);
     }
 
     public function getRouteKeyName()

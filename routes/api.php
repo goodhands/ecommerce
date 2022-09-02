@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Repositories\HasAnalyticsRepository;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,6 +25,7 @@ Route::get('/', function (Request $request) {
         "version" => "v1/api"
     ];
 });
+Route::get('/ga', [HasAnalyticsRepository::class, 'handle']);
 
 require __DIR__ . '/auth.php';
 
